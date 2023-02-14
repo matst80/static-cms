@@ -1,12 +1,15 @@
 services:
-  api:
-    image: node:18-alpine
-    ports:
-      - 3000:3000
-    volumes:
-      - ./static:/app/static
+  # api:
+  #   image: node:18-alpine
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - ./src:/app/src
+  #     - ./src:/app/src
+  #     - ./static:/app/static
   server:
     image: macbre/nginx-brotli:1.19.6-http3
+    user: "root"
     ports:
       - 8080:80
     volumes:
