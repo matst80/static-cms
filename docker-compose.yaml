@@ -1,0 +1,14 @@
+services:
+  api:
+    image: node:18-alpine
+    ports:
+      - 3000:3000
+    volumes:
+      - ./static:/app/static
+  server:
+    image: macbre/nginx-brotli:1.19.6-http3
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./static:/app/html
