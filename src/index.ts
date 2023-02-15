@@ -3,6 +3,7 @@ import http from "http";
 import { getSectionAndPath, getStoragePathFromUrl } from "./file-utils";
 import { jsonRequest } from "./server-utils";
 import { StorageSections } from "./types/storage";
+import { existsSync } from "fs";
 
 const port = process.env.PORT ?? 3010;
 
@@ -25,14 +26,22 @@ const server = http.createServer(
     const { path, section } = getSectionAndPath(url);
 
     if (section) {
-      const [originalFilePath, data] = await Promise.all([
-        getStoragePathFromUrl(path, section),
-        body.then(validate(section)),
-      ]);
-      if (section === "page") {
-        await storePages({ ...data, url: path });
+      const fileExistsPromise = getStoragePathFromUrl(path, section).then(
+        (filePath) => ({ exists: existsSync(filePath), filePath })
+      );
+
+      if (method === "DELETE") {
+        if (await fileExistsPromise) {
+          console.log("delete file!");
+        }
+      } else if (method === "POST" || method === "PUT") {
+        const data = await body;
+        if (section === "page") {
+          await storePages({ ...data, url: path });
+        }
+      } else if (method === "PATCH") {
+        console.log("patch file");
       }
-      console.log(path, data);
       return { ok: true };
     }
     res.writeHead(400, "Invalid section");
