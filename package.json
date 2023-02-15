@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "concurrently \"tsc --watch\" \"nodemon --watch dist dist/index.js\"",
+    "dev": "concurrently \"tsc --watch\" \"nodemon --watch dist dist/index.js\" \"cd client && npm run dev -- --host\"",
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

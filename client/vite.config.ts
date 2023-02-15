@@ -9,11 +9,11 @@ export default defineConfig({
   server: {
     proxy: {
       "^/page/.*": {
-        target: "http://localhost:3010",
+        target: "http://127.0.0.1:8080",
         changeOrigin: true,
       },
       "^/settings/.*": {
-        target: "http://localhost:3010",
+        target: "http://127.0.0.1:8080",
         changeOrigin: true,
       },
     },

@@ -35,7 +35,7 @@ const db = redisStorage({
 
 const authorized = ({ headers }: http.IncomingMessage) => {
   const { authorization } = headers;
-  console.log(authorization);
+  console.log("auth?", authorization);
   return authorization != null;
 };
 

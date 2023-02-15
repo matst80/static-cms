@@ -5,7 +5,7 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
   useEffect(()=>{
-    fetch('/page/index.json').then(d=>d.json()).then(console.log);
+    fetch('/page/mats').then(d=>d.json()).then(console.log);
   },[])
   return (
     <div className="App">
