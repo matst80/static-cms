@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStoragePathFromPage = exports.getStoragePathFromUrl = exports.getSectionAndPath = exports.compressStaticFile = void 0;
+exports.getStoragePathFromPage = exports.getStoragePathFromUrl = exports.getSectionAndPath = exports.getVariants = exports.compressStaticFile = void 0;
 const node_fs_1 = require("node:fs");
 const promises_1 = require("node:fs/promises");
 const node_path_1 = require("node:path");
@@ -58,6 +58,8 @@ const compressStaticFile = async (filename, data, emptyWithoutCompression = fals
     ]);
 };
 exports.compressStaticFile = compressStaticFile;
+const getVariants = (path) => [path, path + ".gz", path + ".br"];
+exports.getVariants = getVariants;
 const staticPath = process.env.STATIC_PATH ?? "static";
 const makeJsonUrl = (url) => {
     if (url === "" || url === "/") {

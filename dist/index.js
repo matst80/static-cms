@@ -8,6 +8,7 @@ const http_1 = __importDefault(require("http"));
 const file_utils_1 = require("./file-utils");
 const server_utils_1 = require("./server-utils");
 const fs_1 = require("fs");
+const promises_1 = require("fs/promises");
 const port = process.env.PORT ?? 3010;
 const validate = (type) => (data) => {
     if (type === "page") {
@@ -27,7 +28,9 @@ const server = http_1.default.createServer((0, server_utils_1.jsonRequest)(async
     if (section) {
         const fileExistsPromise = (0, file_utils_1.getStoragePathFromUrl)(path, section).then((filePath) => ({ exists: (0, fs_1.existsSync)(filePath), filePath }));
         if (method === "DELETE") {
-            if (await fileExistsPromise) {
+            const { exists, filePath } = await fileExistsPromise;
+            if (exists) {
+                await (0, file_utils_1.getVariants)(filePath).map(promises_1.unlink);
                 console.log("delete file!");
             }
         }

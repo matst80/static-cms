@@ -1,9 +1,14 @@
 import { storePages } from "./page";
 import http from "http";
-import { getSectionAndPath, getStoragePathFromUrl } from "./file-utils";
+import {
+  getSectionAndPath,
+  getStoragePathFromUrl,
+  getVariants,
+} from "./file-utils";
 import { jsonRequest } from "./server-utils";
 import { StorageSections } from "./types/storage";
 import { existsSync } from "fs";
+import { unlink } from "fs/promises";
 
 const port = process.env.PORT ?? 3010;
 
@@ -31,7 +36,10 @@ const server = http.createServer(
       );
 
       if (method === "DELETE") {
-        if (await fileExistsPromise) {
+        const { exists, filePath } = await fileExistsPromise;
+        if (exists) {
+          await getVariants(filePath).map(unlink);
+
           console.log("delete file!");
         }
       } else if (method === "POST" || method === "PUT") {

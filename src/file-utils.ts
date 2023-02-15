@@ -42,6 +42,8 @@ export const compressStaticFile = async (
   ]);
 };
 
+export const getVariants = (path: string) => [path, path + ".gz", path + ".br"];
+
 const staticPath = process.env.STATIC_PATH ?? "static";
 
 const makeJsonUrl = (url: string) => {

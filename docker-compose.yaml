@@ -1,4 +1,16 @@
 services:
+  redis:
+    container_name: redis
+    restart: unless-stopped
+    image: redis:latest
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+    command: redis-server /etc/redis/redis.conf
+    ports:
+      - 6379:6379
+    volumes:
+      - ./db:/data
+      - ./redis.conf:/etc/redis/redis.conf
   # api:
   #   image: node:18-alpine
   #   ports:
