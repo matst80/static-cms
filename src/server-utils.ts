@@ -1,10 +1,10 @@
 import http from "http";
 
-type JsonRequest = http.IncomingMessage & {
+export type JsonRequest = http.IncomingMessage & {
   body: Promise<any>;
 };
 
-type JsonResponse = http.ServerResponse<http.IncomingMessage> & {
+export type JsonResponse = http.ServerResponse<http.IncomingMessage> & {
   json: (data: Promise<any>) => void;
   error: (err: Error | string) => void;
 };

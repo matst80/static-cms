@@ -11,6 +11,13 @@ import { existsSync } from "fs";
 import { unlink } from "fs/promises";
 import { redisStorage } from "./db";
 
+const getHandler =
+  process.env.NODE_ENV === "development"
+    ? require("staticfiles")
+    : () => {
+        return null;
+      };
+
 const port = process.env.PORT ?? 3010;
 
 const validate = (type: StorageSections) => (data: any) => {
@@ -39,16 +46,19 @@ const server = http.createServer(
       console.log("missing url");
       return res.writeHead(404).end();
     }
-    if (!authorized(req)) {
-      return res.writeHead(401).end();
-    }
+
     const { path, section } = getSectionAndPath(url);
 
     if (section) {
+      if (method === "GET") {
+        return getHandler(req, res);
+      }
+      if (!authorized(req)) {
+        return res.writeHead(401).end();
+      }
       const fileExistsPromise = getStoragePathFromUrl(path, section).then(
         (filePath) => ({ exists: existsSync(filePath), filePath })
       );
-
       if (method === "DELETE") {
         const { exists, filePath } = await fileExistsPromise;
         if (exists) {

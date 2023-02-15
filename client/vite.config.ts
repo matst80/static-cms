@@ -6,5 +6,17 @@ export default defineConfig({
   build: {
     outDir: "../static",
   },
+  server: {
+    proxy: {
+      "^/page/.*": {
+        target: "http://localhost:3010",
+        changeOrigin: true,
+      },
+      "^/settings/.*": {
+        target: "http://localhost:3010",
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [react()],
 });
