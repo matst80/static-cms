@@ -30,9 +30,14 @@ const error = (
   message: Error | string,
   status = 400
 ) => {
-  res.setHeader("Content-Type", "application/json");
-  res.writeHead(status);
-  res.end(JSON.stringify({ message }));
+  console.error(message);
+  if (!res.closed) {
+    if (!res.headersSent) {
+      res.setHeader("Content-Type", "application/json");
+      res.writeHead(status);
+    }
+    res.end(JSON.stringify({ message }));
+  }
 };
 
 export const jsonRequest =
@@ -53,14 +58,17 @@ const handle = <T extends any>(
 ) =>
   prm
     .then((data) => {
-      if (!res.headersSent) {
-        res.setHeader("Content-Type", "application/json");
-        res.writeHead(data ? 200 : 201);
-      }
-      if (!data) {
-        res.end();
-      } else {
-        res.end(JSON.stringify(data));
+      if (!res.closed) {
+        if (!res.headersSent) {
+          res.setHeader("Content-Type", "application/json");
+          res.writeHead(data ? 200 : 201);
+        }
+
+        if (!data) {
+          res.end();
+        } else {
+          res.end(JSON.stringify(data));
+        }
       }
     })
     .catch((err) => error(res, err.toString(), 500));

@@ -9,6 +9,7 @@ import { jsonRequest } from "./server-utils";
 import { StorageSections } from "./types/storage";
 import { existsSync } from "fs";
 import { unlink } from "fs/promises";
+import { redisStorage } from "./db";
 
 const port = process.env.PORT ?? 3010;
 
@@ -21,12 +22,25 @@ const validate = (type: StorageSections) => (data: any) => {
   return data;
 };
 
+const db = redisStorage({
+  url: process.env.REDIS ?? "redis://:slaskdb@localhost:6379",
+});
+
+const authorized = ({ headers }: http.IncomingMessage) => {
+  const { authorization } = headers;
+  console.log(authorization);
+  return authorization != null;
+};
+
 const server = http.createServer(
   jsonRequest(async (req, res) => {
     const { url, method, headers, body } = req;
     if (!url) {
       console.log("missing url");
       return res.writeHead(404).end();
+    }
+    if (!authorized(req)) {
+      return res.writeHead(401).end();
     }
     const { path, section } = getSectionAndPath(url);
 
@@ -40,7 +54,7 @@ const server = http.createServer(
         if (exists) {
           await getVariants(filePath).map(unlink);
 
-          console.log("delete file!");
+          return { filePath, deleted: true };
         }
       } else if (method === "POST" || method === "PUT") {
         const data = await body;
