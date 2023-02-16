@@ -42,12 +42,13 @@ export const pageFactory = (db: StorageProvider) => {
       pages.map(
         prepairPage((page) =>
           Promise.all([
-            ...saveModules(page.modules),
+            ...(page.modules ? saveModules(page.modules) : []),
             db.savePage(page),
             getStoragePathFromPage(page).then((path) =>
-              compressStaticFile(path, page, true).then(() =>
-                db.emitUrlChange(page.url)
-              )
+              compressStaticFile(path, page, true).then(() => {
+                const { url, seoTitle } = page;
+                db.emitUrlChange({ url, title: seoTitle ?? "" });
+              })
             ),
           ])
         )

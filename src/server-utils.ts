@@ -40,12 +40,26 @@ const error = (
   }
 };
 
+export type AuthHandler = (
+  req: http.IncomingMessage,
+  res: http.ServerResponse<http.IncomingMessage>
+) => void;
+
+export type JsonHandler = (
+  request: JsonRequest,
+  response: JsonResponse
+) => Promise<any>;
+
 export const jsonRequest =
-  (handler: (request: JsonRequest, response: JsonResponse) => Promise<any>) =>
+  (authHandler: AuthHandler, handler: JsonHandler) =>
   (
     req: http.IncomingMessage,
     res: http.ServerResponse<http.IncomingMessage>
   ) => {
+    const { url } = req;
+    if (url?.startsWith("/auth/")) {
+      return authHandler(req, res);
+    }
     (req as JsonRequest).body = json(req);
     (res as JsonResponse).json = (prm) => handle(res, prm);
     (res as JsonResponse).error = (err) => error(res, err);

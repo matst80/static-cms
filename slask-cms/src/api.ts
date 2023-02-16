@@ -17,9 +17,12 @@ const asJson = <T>(d: Response) => {
   throw Error(d.statusText);
 };
 
+type TreeNode = { url: string; children: Node[] };
+
 export type CmsApi = {
   getPage(url: string): Promise<Page>;
-  getUrls(url?: string): Promise<string[]>;
+  getUrls(url?: string): Promise<{ url: string; title?: string }[]>;
+  getTree(url?: string): Promise<TreeNode[]>;
   savePage(url: string, page: Page): Promise<any>;
 };
 
@@ -31,8 +34,13 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
       );
     },
     getUrls(url = "") {
-      return fetch(`${baseUrl}/page/${fixCmsUrl(url)}urls.json`).then((d) =>
-        asJson<string[]>(d)
+      return fetch(`${baseUrl}/page/${fixCmsUrl(url)}_urls.json`).then((d) =>
+        asJson<{ url: string; title: string }[]>(d)
+      );
+    },
+    getTree(url = "") {
+      return fetch(`${baseUrl}/page/${fixCmsUrl(url)}_tree.json`).then((d) =>
+        asJson<TreeNode[]>(d)
       );
     },
     savePage(url, page): Promise<any> {

@@ -11,7 +11,7 @@ import { Module, Page } from "./types/storage";
 const uid = new ShortUniqueId();
 
 const moduleListId = "module_ids";
-const pageListId = "page_urls";
+const pageListId = "page_index";
 const urlChangeId = "page_url_change";
 
 export const redisStorage = (
@@ -25,10 +25,11 @@ export const redisStorage = (
     getId() {
       return uid.stamp(32);
     },
-    emitUrlChange(url) {
+    emitUrlChange(urlData) {
+      const data = JSON.stringify(urlData);
       return Promise.all([
-        client.publish(urlChangeId, url),
-        client.publish(url, Date.now().toString()),
+        client.publish(urlChangeId, data),
+        client.publish(urlData.url, data),
       ]);
     },
     async saveModule(module) {
@@ -41,14 +42,18 @@ export const redisStorage = (
       }
     },
     async savePage(page) {
-      await client.zAdd(pageListId, { value: page.url, score: Date.now() });
+      await client.zAdd(pageListId, {
+        value: JSON.stringify({ url: page.url, title: page.seoTitle }),
+        score: Date.now(),
+      });
       await client.hSet(Page, page.url, JSON.stringify(page));
     },
     listenForUrlChange(listener) {
-      clientPubSub.subscribe(urlChangeId, listener);
+      clientPubSub.subscribe(urlChangeId, (data) => listener(JSON.parse(data)));
     },
-    getUrls() {
-      return client.zRange(pageListId, 0, -1);
+    async getUrls() {
+      const urls = await client.zRange(pageListId, 0, -1);
+      return urls.map((url) => JSON.parse(url));
     },
   };
 };

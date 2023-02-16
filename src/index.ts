@@ -11,6 +11,7 @@ import { existsSync } from "fs";
 import { unlink } from "fs/promises";
 import { redisStorage } from "./db";
 import { urlGeneratorFactory } from "./url-generator";
+import { authHandlerFactory } from "./auth";
 
 const getHandler =
   process.env.NODE_ENV === "development"
@@ -34,17 +35,33 @@ const db = redisStorage({
   url: process.env.REDIS ?? "redis://:slaskdb@localhost:6379",
 });
 
+const authOptions = {
+  configurationUrl:
+    "https://accounts.google.com/.well-known/openid-configuration",
+  client_id:
+    process.env.GOOGLE_CLIENT_ID ||
+    "1017700364201-hiv4l9c41osmqfkv17ju7gg08e570lfr.apps.googleusercontent.com",
+  client_secret:
+    process.env.GOOGLE_CLIENT_SECRET || "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",
+  redirect_uri:
+    process.env.GOOGLE_REDIRECT_URI || "https://cms.tornberg.me/auth/callback",
+};
+const { authHandler, validToken } = authHandlerFactory(authOptions);
+
 const { storePages } = pageFactory(db);
 urlGeneratorFactory(db);
 
 const authorized = ({ headers }: http.IncomingMessage) => {
-  const { authorization } = headers;
-  // console.log("auth?", authorization);
-  return authorization != null;
+  return true;
+  // const { authorization } = headers;
+  // if (!authorization) {
+  //   return false;
+  // }
+  // return validToken(authorization.split(" ")[1]);
 };
 
 const server = http.createServer(
-  jsonRequest(async (req, res) => {
+  jsonRequest(authHandler, async (req, res) => {
     const { url, method, headers, body } = req;
     if (!url) {
       // console.log("missing url");
