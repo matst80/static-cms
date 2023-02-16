@@ -1,4 +1,4 @@
-import { storePages } from "./page";
+import { pageFactory } from "./page";
 import http from "http";
 import {
   getSectionAndPath,
@@ -33,9 +33,11 @@ const db = redisStorage({
   url: process.env.REDIS ?? "redis://:slaskdb@localhost:6379",
 });
 
+const { storePages } = pageFactory(db);
+
 const authorized = ({ headers }: http.IncomingMessage) => {
   const { authorization } = headers;
-  console.log("auth?", authorization);
+  // console.log("auth?", authorization);
   return authorization != null;
 };
 
@@ -43,7 +45,7 @@ const server = http.createServer(
   jsonRequest(async (req, res) => {
     const { url, method, headers, body } = req;
     if (!url) {
-      console.log("missing url");
+      // console.log("missing url");
       return res.writeHead(404).end();
     }
 

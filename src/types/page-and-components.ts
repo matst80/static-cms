@@ -3,16 +3,16 @@ export type Page = {
   url: string;
   seoTitle?: string;
   seoDescription?: string;
-  modules: Module[];
+  modules: PageModule[];
 };
 
-export type Module = {
+export type PageModule = {
   type: string;
   id: string;
   links?: Link[];
   pictures?: Picture[];
   settings: Settings;
-  modules?: Module[];
+  modules?: PageModule[];
 };
 
 export type Settings = {

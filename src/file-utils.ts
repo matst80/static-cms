@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import zlib, { createBrotliCompress, createGzip } from "node:zlib";
-import { Page } from "./types/page-and-components";
+import { Page, PageModule } from "./types/page-and-components";
 import { storageSections, StorageSections } from "./types/storage";
 
 const gzipCompressFile = async (outputFile: string, source: ReadStream) => {
@@ -33,6 +33,7 @@ export const compressStaticFile = async (
   data: object,
   emptyWithoutCompression = false
 ) => {
+  console.log("writing", filename);
   const jsonContent = JSON.stringify(data);
   const getStream = () => Readable.from(jsonContent) as ReadStream;
   return Promise.all([
@@ -89,3 +90,6 @@ export const getStoragePathFromUrl = async (
 
 export const getStoragePathFromPage = ({ url }: Page) =>
   getStoragePathFromUrl(url, "page");
+
+export const getStoragePathFromModule = ({ id }: PageModule) =>
+  join(staticPath, "module", `${id}.json`);
