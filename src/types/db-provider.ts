@@ -1,8 +1,8 @@
-import { PageModule } from "./page-and-components";
-import { StorageSections } from "./storage";
+import { Page, PageModule } from "./page-and-components";
 
 export type StorageProvider = {
-  getId: (module: StorageSections) => Promise<string>;
+  getId: () => string;
   emitChange: (url: string) => Promise<number>;
   saveModule: (module: PageModule) => Promise<void>;
+  savePage: (page: Page) => Promise<void>;
 };

@@ -4,6 +4,8 @@ export type Page = {
   seoTitle?: string;
   seoDescription?: string;
   modules: PageModule[];
+  created?: number;
+  modified?: number;
 };
 
 export type PageModule = {
