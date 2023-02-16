@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import zlib, { createBrotliCompress, createGzip } from "node:zlib";
-import { Page, PageModule } from "./types/page-and-components";
+import { Page, PageModule } from "slask-cms";
 import { storageSections, StorageSections } from "./types/storage";
 
 const gzipCompressFile = async (outputFile: string, source: ReadStream) => {
@@ -94,4 +94,5 @@ export const getStoragePathFromPage = ({ url }: Page) =>
 export const getStoragePathFromModule = ({ id }: PageModule) =>
   join(staticPath, "module", `${id}.json`);
 
-export const getStoragePathForUrlList = () => join(staticPath, `urls.json`);
+export const getStoragePathForUrlList = () =>
+  join(staticPath, "page", `urls.json`);

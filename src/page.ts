@@ -4,7 +4,7 @@ import {
   getStoragePathFromPage,
 } from "./file-utils";
 import { StorageProvider } from "./types/db-provider";
-import { PageModule, Page } from "./types/page-and-components";
+import { PageModule, Page } from "slask-cms";
 
 const appendModuleId =
   (idGenerator: () => string, fn: (module: PageModule) => Promise<unknown>[]) =>

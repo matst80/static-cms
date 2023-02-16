@@ -1,13 +1,38 @@
-export default function PageModule({ modules, onChange, ...rest }: any) {
+import { PageModule } from "slask-cms";
+
+type PageModuleProps = {
+  module: PageModule;
+  onChange: (data: PageModule) => void;
+};
+
+export default function PageModuleComponent({
+  module,
+  onChange,
+}: PageModuleProps) {
+  const { modules, type } = module;
   const updateModule = (idx: number) => (data: any) => {
-    modules[idx] = data;
-    onChange(modules);
+    if (modules) {
+      modules[idx] = data;
+      onChange({ ...module, modules });
+    }
   };
   return (
     <div style={{ padding: "2rem" }}>
-      <pre>{JSON.stringify(rest, null, 2)}</pre>
+      <div>
+        <label>
+          <span>Type</span>
+          <input
+            value={type}
+            onChange={(e) => onChange({ ...module, type: e.target.value })}
+          ></input>
+        </label>
+      </div>
       {modules?.map((d: any, idx: number) => (
-        <PageModule key={d.id} {...d} onChange={updateModule(idx)} />
+        <PageModuleComponent
+          key={d.id}
+          module={d}
+          onChange={updateModule(idx)}
+        />
       ))}
     </div>
   );

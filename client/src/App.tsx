@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
 import "./App.css";
 import Page from "./editors/Page";
+import { useCms } from "./useCms";
 
 function App() {
   const [url, setUrl] = useState<string>("");
   const [urls, setUrls] = useState<string[]>([]);
+  const { getUrls } = useCms();
   useEffect(() => {
-    fetch("/urls.json")
-      .then((d) => d.json())
-      .then(setUrls);
-  }, []);
+    getUrls().then(setUrls);
+  }, [getUrls]);
   return (
     <div className="App">
       <h1>Vite + React</h1>
@@ -19,7 +18,9 @@ function App() {
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
         {urls.map((u) => (
-          <button onClick={() => setUrl(u)}>{u}</button>
+          <button key={u} onClick={() => setUrl(u)}>
+            {u}
+          </button>
         ))}
         <Page url={url} />
       </div>

@@ -1,4 +1,4 @@
-import { Page, PageModule } from "./page-and-components";
+import { Page, PageModule } from "slask-cms";
 
 export type StorageProvider = {
   getId: () => string;

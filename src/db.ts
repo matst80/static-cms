@@ -32,8 +32,13 @@ export const redisStorage = (
       ]);
     },
     async saveModule(module) {
-      await client.zAdd(moduleListId, { value: module.id, score: Date.now() });
-      await client.hSet(Module, module.id, JSON.stringify(module));
+      if (module.id) {
+        await client.zAdd(moduleListId, {
+          value: module.id,
+          score: Date.now(),
+        });
+        await client.hSet(Module, module.id, JSON.stringify(module));
+      }
     },
     async savePage(page) {
       await client.zAdd(pageListId, { value: page.url, score: Date.now() });
