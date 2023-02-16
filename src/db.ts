@@ -11,7 +11,7 @@ import { Module, Page } from "./types/storage";
 const uid = new ShortUniqueId();
 
 const moduleListId = "module_ids";
-const pageListId = "page_index";
+const pageListId = "page_urls";
 const urlChangeId = "page_url_change";
 
 export const redisStorage = (
@@ -27,10 +27,7 @@ export const redisStorage = (
     },
     emitUrlChange(urlData) {
       const data = JSON.stringify(urlData);
-      return Promise.all([
-        client.publish(urlChangeId, data),
-        client.publish(urlData.url, data),
-      ]);
+      return Promise.all([client.publish(urlChangeId, data)]);
     },
     async saveModule(module) {
       if (module.id) {
@@ -42,18 +39,25 @@ export const redisStorage = (
       }
     },
     async savePage(page) {
-      await client.zAdd(pageListId, {
-        value: JSON.stringify({ url: page.url, title: page.seoTitle }),
-        score: Date.now(),
-      });
-      await client.hSet(Page, page.url, JSON.stringify(page));
+      await Promise.all([
+        client.zAdd(pageListId, {
+          value: page.url,
+          score: Date.now(),
+        }),
+        client.hSet(Page, page.url, JSON.stringify(page)),
+        client.hSet(page.url, "title", page.seoTitle ?? ""),
+      ]);
     },
     listenForUrlChange(listener) {
       clientPubSub.subscribe(urlChangeId, (data) => listener(JSON.parse(data)));
     },
     async getUrls() {
       const urls = await client.zRange(pageListId, 0, -1);
-      return urls.map((url) => JSON.parse(url));
+      return await Promise.all(
+        urls.map((url) =>
+          client.hGet(url, "title").then((title = "") => ({ url, title }))
+        )
+      );
     },
   };
 };
