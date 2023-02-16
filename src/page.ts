@@ -9,7 +9,10 @@ import { PageModule, Page } from "./types/page-and-components";
 const appendModuleId =
   (idGenerator: () => string, fn: (module: PageModule) => Promise<unknown>[]) =>
   (module: PageModule) => {
-    return fn({ ...module, id: module.id ?? idGenerator() });
+    if (!module.id) {
+      module.id = idGenerator();
+    }
+    return fn(module);
   };
 
 const saveModulesFactory = (db: StorageProvider) => {
@@ -43,7 +46,7 @@ export const pageFactory = (db: StorageProvider) => {
             db.savePage(page),
             getStoragePathFromPage(page).then((path) =>
               compressStaticFile(path, page, true).then(() =>
-                db.emitChange(page.url)
+                db.emitUrlChange(page.url)
               )
             ),
           ])

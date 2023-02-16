@@ -10,7 +10,7 @@ export type Page = {
 
 export type PageModule = {
   type: string;
-  id: string;
+  id?: string;
   links?: Link[];
   pictures?: Picture[];
   settings: Settings;

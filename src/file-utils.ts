@@ -93,3 +93,5 @@ export const getStoragePathFromPage = ({ url }: Page) =>
 
 export const getStoragePathFromModule = ({ id }: PageModule) =>
   join(staticPath, "module", `${id}.json`);
+
+export const getStoragePathForUrlList = () => join(staticPath, `urls.json`);

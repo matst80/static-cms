@@ -10,6 +10,7 @@ import { StorageSections } from "./types/storage";
 import { existsSync } from "fs";
 import { unlink } from "fs/promises";
 import { redisStorage } from "./db";
+import { urlGeneratorFactory } from "./url-generator";
 
 const getHandler =
   process.env.NODE_ENV === "development"
@@ -34,6 +35,7 @@ const db = redisStorage({
 });
 
 const { storePages } = pageFactory(db);
+urlGeneratorFactory(db);
 
 const authorized = ({ headers }: http.IncomingMessage) => {
   const { authorization } = headers;
@@ -72,6 +74,8 @@ const server = http.createServer(
         const data = await body;
         if (section === "page") {
           await storePages({ ...data, url: path });
+        } else {
+          console.log("save", section, data);
         }
       } else if (method === "PATCH") {
         console.log("patch file");
