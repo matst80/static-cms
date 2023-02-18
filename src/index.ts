@@ -8,10 +8,12 @@ import {
 import { jsonRequest } from "./server-utils";
 import { StorageSections } from "./types/storage";
 import { existsSync } from "fs";
-import { unlink } from "fs/promises";
 import { redisStorage } from "./db";
 import { urlGeneratorFactory } from "./url-generator";
 import { authHandlerFactory } from "./auth";
+import { pageHandlerFactory } from "./pagehandler";
+import { SectionHandler } from "./types/server";
+import { authOptions } from "./settings";
 
 const getHandler =
   process.env.NODE_ENV === "development"
@@ -22,33 +24,12 @@ const getHandler =
 
 const port = process.env.PORT ?? 3010;
 
-const validate = (type: StorageSections) => (data: any) => {
-  if (type === "page") {
-    if (!data.modules) {
-      throw new Error("no modules, page will be empty");
-    }
-  }
-  return data;
-};
-
 const db = redisStorage({
   url: process.env.REDIS ?? "redis://:slaskdb@localhost:6379",
 });
 
-const authOptions = {
-  configurationUrl:
-    "https://accounts.google.com/.well-known/openid-configuration",
-  client_id:
-    process.env.GOOGLE_CLIENT_ID ||
-    "1017700364201-hiv4l9c41osmqfkv17ju7gg08e570lfr.apps.googleusercontent.com",
-  client_secret:
-    process.env.GOOGLE_CLIENT_SECRET || "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",
-  redirect_uri:
-    process.env.GOOGLE_REDIRECT_URI || "https://cms.tornberg.me/auth/callback",
-};
+const pageHandler = pageHandlerFactory(db);
 const { authHandler, validToken } = authHandlerFactory(authOptions);
-
-const { storePages } = pageFactory(db);
 urlGeneratorFactory(db);
 
 const authorized = ({ headers }: http.IncomingMessage) => {
@@ -60,46 +41,42 @@ const authorized = ({ headers }: http.IncomingMessage) => {
   // return validToken(authorization.split(" ")[1]);
 };
 
+const sectionHandlers: Record<StorageSections, SectionHandler> = {
+  page: pageHandler,
+  header: () => Promise.reject("Not implemented"),
+  settings: () => Promise.reject("Not implemented"),
+  module: () => Promise.reject("Not implemented"),
+};
+
 const server = http.createServer(
   jsonRequest(authHandler, async (req, res) => {
-    const { url, method, headers, body } = req;
-    if (!url) {
+    const { url, method, body } = req;
+    if (!url || !method) {
       // console.log("missing url");
       return res.writeHead(404).end();
     }
 
     const { path, section } = getSectionAndPath(url);
-
-    if (section) {
-      if (method === "GET") {
-        return getHandler(req, res);
-      }
-      if (!authorized(req)) {
-        return res.writeHead(401).end();
-      }
-      const fileExistsPromise = getStoragePathFromUrl(path, section).then(
-        (filePath) => ({ exists: existsSync(filePath), filePath })
-      );
-      if (method === "DELETE") {
-        const { exists, filePath } = await fileExistsPromise;
-        if (exists) {
-          await getVariants(filePath).map(unlink);
-
-          return { filePath, deleted: true };
-        }
-      } else if (method === "POST" || method === "PUT") {
-        const data = await body;
-        if (section === "page") {
-          await storePages({ ...data, url: path });
-        } else {
-          console.log("save", section, data);
-        }
-      } else if (method === "PATCH") {
-        console.log("patch file");
-      }
-      return { ok: true };
+    if (!section) {
+      return res.writeHead(400, "Invalid section");
     }
-    res.writeHead(400, "Invalid section");
+
+    if (method === "GET") {
+      return getHandler(req, res);
+    }
+    if (!authorized(req)) {
+      return res.writeHead(401).end();
+    }
+
+    return sectionHandlers[section]({
+      fileStatus: getStoragePathFromUrl(path, section).then((filePath) => ({
+        exists: existsSync(filePath),
+        filePath,
+      })),
+      method,
+      path,
+      body,
+    });
   })
 );
 

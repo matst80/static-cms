@@ -2,9 +2,11 @@ import {
   compressStaticFile,
   getStoragePathFromModule,
   getStoragePathFromPage,
+  getStoragePathFromUrl,
 } from "./file-utils";
 import { StorageProvider } from "./types/db-provider";
 import { PageModule, Page } from "slask-cms";
+import { readFile } from "node:fs/promises";
 
 const appendModuleId =
   (idGenerator: () => string, fn: (module: PageModule) => Promise<unknown>[]) =>
@@ -30,29 +32,36 @@ const saveModulesFactory = (db: StorageProvider) => {
   return saveModules;
 };
 
-const prepairPage = (fn: (page: Page) => Promise<unknown>) => (page: Page) => {
+const prepairPage = <T extends PageUpdate>(fn: (page: T) => Promise<T>) => (page: T) => {
   const now = Date.now();
   return fn({ ...page, created: page.created ?? now, modified: now });
 };
 
+type PageUpdate = { url: string } & Partial<Page>;
+
 export const pageFactory = (db: StorageProvider) => {
+  const loadPage = (path: string) =>
+    readFile(path, "utf-8").then((jsonText) => JSON.parse(jsonText));
+
+  const savePage = (page: Page):Promise<Page> =>
+    Promise.all([
+      ...(page.modules ? saveModules(page.modules) : []),
+      db.savePage(page),
+      getStoragePathFromPage(page).then((path) =>
+        compressStaticFile(path, page, true).then(() => {
+          const { url, seoTitle } = page;
+          db.emitUrlChange({ url, title: seoTitle ?? "" });
+          return page;
+        })
+      ),
+    ]).then((result)=>result.pop() as Page);
+
   const saveModules = saveModulesFactory(db);
+  const updatePage = ({ url, ...page }: PageUpdate) => getStoragePathFromUrl(url, "page")
+      .then(loadPage)
+      .then((original) => savePage({ ...original, ...page, url }));
+  
   const storePages = (...pages: Page[]) =>
-    Promise.all(
-      pages.map(
-        prepairPage((page) =>
-          Promise.all([
-            ...(page.modules ? saveModules(page.modules) : []),
-            db.savePage(page),
-            getStoragePathFromPage(page).then((path) =>
-              compressStaticFile(path, page, true).then(() => {
-                const { url, seoTitle } = page;
-                db.emitUrlChange({ url, title: seoTitle ?? "" });
-              })
-            ),
-          ])
-        )
-      )
-    );
-  return { storePages };
+    Promise.all(pages.map(prepairPage(savePage)));
+  return { storePages, updatePage };
 };
