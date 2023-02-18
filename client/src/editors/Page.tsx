@@ -25,7 +25,7 @@ export default function PageEditor({ url }: any) {
   //   getPage(url).then(setPage);
   // }, [url, getPage]);
   const page = useLoaderData() as Page;
-  const fetcher = useFetcher();
+
   const changeHandler = changeHandlerFactory(page, console.log);
   const updateModule = changeHandler("modules");
   const moduleChange = (idx: number) => (data: PageModule) => {
@@ -37,12 +37,12 @@ export default function PageEditor({ url }: any) {
   return (
     <div>
       {page ? (
-        <fetcher.Form method="post" id="page-form">
+        <Form method="post" id="page-form">
           <label>
             <span>Title</span>
             <input
               name="seoTitle"
-              defaultValue={page.seoTitle ?? ""}
+              defaultValue={page.seoTitle}
               // onChange={changeHandler("seoTitle")}
             />
           </label>
@@ -50,7 +50,7 @@ export default function PageEditor({ url }: any) {
             <span>Description</span>
             <input
               name="seoDescription"
-              defaultValue={page.seoDescription ?? ""}
+              defaultValue={page.seoDescription}
               // onChange={changeHandler("seoDescription")}
             />
           </label>
@@ -78,7 +78,7 @@ export default function PageEditor({ url }: any) {
             <SettingsPanel />
             <Topbar />
           </Editor>
-        </fetcher.Form>
+        </Form>
       ) : (
         <p>loading...</p>
       )}

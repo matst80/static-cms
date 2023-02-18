@@ -14,7 +14,7 @@ import {
 import PageEditor from "./editors/Page";
 import { cmsApiFactory } from "slask-cms";
 
-const baseUrl = "https://cms.tornberg.me";
+const baseUrl = "";
 
 const { getUrls, getPage, updatePage } = cmsApiFactory(fetch, baseUrl);
 
@@ -30,15 +30,13 @@ const router = createBrowserRouter([
         path: "/:slug",
         element: <PageEditor />,
         loader: ({ params: { slug } }) => getPage(slug ?? ""),
-        action: async (props) => {
-          const { request, params } = props;
-          const { slug } = params;
+        action: async ({ request, params: { slug } }) => {
           const formData = await request.formData();
           const updates = Object.fromEntries(formData);
 
           console.log(updates);
-          await updatePage({ ...updates, url: slug });
-          return redirect(`/${params.slug}`);
+          await updatePage(slug!, updates);
+          return redirect(`/${slug}`);
         },
       },
     ],

@@ -9,15 +9,15 @@ export default defineConfig({
   server: {
     proxy: {
       "^/page/.*": {
-        target: "http://127.0.0.1:8080",
+        target: "https://cms.tornberg.me",
         changeOrigin: true,
       },
       "^/settings/.*": {
-        target: "http://127.0.0.1:8080",
+        target: "https://cms.tornberg.me",
         changeOrigin: true,
       },
       "/urls.json": {
-        target: "http://127.0.0.1:8080",
+        target: "https://cms.tornberg.me",
         changeOrigin: true,
       },
     },
