@@ -24,6 +24,7 @@ export type CmsApi = {
   getUrls(url?: string): Promise<{ url: string; title?: string }[]>;
   getTree(url?: string): Promise<TreeNode[]>;
   savePage(url: string, page: Page): Promise<any>;
+  deletePage(url: string): Promise<boolean>;
   updatePage(url: string, page: Partial<Page>): Promise<any>;
 };
 
@@ -49,6 +50,11 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
         method: "POST",
         body: JSON.stringify(page),
       }).then((d) => asJson<Page>(d));
+    },
+    deletePage(url) {
+      return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`, {
+        method: "DELETE",
+      }).then((d) => d.ok);
     },
     updatePage(url, page) {
       return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`, {

@@ -1,10 +1,19 @@
 import { Element } from "@craftjs/core";
 import { PageModule } from "slask-cms";
+import { Container } from "../components/Container";
 
-export const modules = {};
+const NotFound = ({ type }: any) => {
+  return <div>not found {type}</div>;
+};
+
+export const modules = { NotFound, Container, Resolver };
 
 export default function Resolver(module: PageModule) {
   const { type, props, id } = module;
-  const Module = (modules as any)[type] ?? <div>not found {type}</div>;
-  return <Element is={Module} id={id} canvas {...props} />;
+  const Module = (modules as any)[type];
+  return Module ? (
+    <Element is={Module} id={id} canvas {...props} />
+  ) : (
+    <NotFound type={type} />
+  );
 }
