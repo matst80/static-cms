@@ -1,7 +1,7 @@
 import { Element } from "@craftjs/core";
 import { PageModule } from "slask-cms";
 
-const modules = {};
+export const modules = {};
 
 export default function Resolver(module: PageModule) {
   const { type, props, id } = module;

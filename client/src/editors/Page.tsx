@@ -1,23 +1,14 @@
 import { Editor, Frame, Element } from "@craftjs/core";
 import { FormEventHandler, useEffect, useState } from "react";
-import { Form, useFetcher, useLoaderData } from "react-router-dom";
-import { Page, PageModule } from "slask-cms";
-import { Button } from "../components/Button";
-import { Card } from "../components/Card";
+import { Form, useLoaderData } from "react-router-dom";
+import { Page } from "slask-cms";
 import { Container } from "../components/Container";
-import Resolver from "../modules/Resolver";
+import Resolver, { modules } from "../modules/Resolver";
 import { SettingsPanel } from "../components/SettingsPanel";
-import { Text } from "../components/Text";
 import { Toolbox } from "../components/Toolbox";
-import { Topbar } from "../components/TopBar";
+import { ModuleChangeHandler } from "../components/ModuleChangeHandler";
 import { useCms } from "../useCms";
 import { changeHandlerFactory } from "../utils";
-
-// const savePage = (page: any) =>
-//   fetch("/page/" + page.url, {
-//     method: "POST",
-//     headers: { authorization: "Bearer a", "content-type": "application/json" },
-//   }).then((d) => d.json());
 
 export default function PageEditor() {
   const loadedPage = useLoaderData() as Page;
@@ -28,7 +19,6 @@ export default function PageEditor() {
   }, [loadedPage]);
 
   const changeHandler = changeHandlerFactory(page, setPage);
-  const updateModule = changeHandler("modules");
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     if (page?.url) {
@@ -56,15 +46,7 @@ export default function PageEditor() {
             />
           </label>
 
-          <Editor
-            resolver={{
-              Card,
-              Button,
-              Text,
-              Container,
-              Resolver,
-            }}
-          >
+          <Editor resolver={modules}>
             <div className="flex">
               <Frame>
                 <Element is={Container} canvas>
@@ -76,7 +58,7 @@ export default function PageEditor() {
               <SettingsPanel />
             </div>
             <Toolbox />
-            <Topbar onChange={updateModule} />
+            <ModuleChangeHandler onChange={changeHandler("modules")} />
           </Editor>
 
           <button type="submit">Save</button>
