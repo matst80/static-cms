@@ -1,4 +1,6 @@
+import { Element } from "@craftjs/core";
 import { PageModule } from "slask-cms";
+import { Container } from "../components/Container";
 import { changeHandlerFactory } from "../utils";
 import Settings from "./Settings";
 
@@ -24,7 +26,7 @@ export default function PageModuleComponent({
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <div>
       <div>
         <label>
           <span>Type</span>
@@ -32,13 +34,21 @@ export default function PageModuleComponent({
         </label>
         <Settings settings={settings} onChange={changeHandler("settings")} />
       </div>
-      {modules?.map((d: any, idx: number) => (
-        <PageModuleComponent
-          key={d.id}
-          module={d}
-          onChange={updateModule(idx)}
-        />
-      ))}
+      <Element
+        id={module.id}
+        is={Container}
+        padding={5}
+        background="transparent"
+        canvas
+      >
+        {modules?.map((d: any, idx: number) => (
+          <PageModuleComponent
+            key={d.id}
+            module={d}
+            onChange={updateModule(idx)}
+          />
+        ))}
+      </Element>
     </div>
   );
 }

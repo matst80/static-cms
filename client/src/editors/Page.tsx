@@ -1,5 +1,12 @@
+import { Editor, Frame, Element } from "@craftjs/core";
 import { useEffect, useState } from "react";
 import { Page, PageModule } from "slask-cms";
+import { Button } from "../components/Button";
+import { Card } from "../components/Card";
+import { Container } from "../components/Container";
+import { SettingsPanel } from "../components/SettingsPanel";
+import { Text } from "../components/Text";
+import { Topbar } from "../components/TopBar";
 import { useCms } from "../useCms";
 import { changeHandlerFactory } from "../utils";
 import PageModuleEditor from "./PageModule";
@@ -42,14 +49,30 @@ export default function PageEditor({ url }: any) {
               onChange={changeHandler("seoDescription")}
             />
           </label>
-          {page.modules?.map((d: any, i: number) => (
-            <PageModuleEditor
-              key={d.id}
-              module={d}
-              onChange={moduleChange(i)}
-            />
-          ))}
+
           <button onClick={() => savePage(url, page)}>Save</button>
+          <Editor
+            resolver={{ Card, Button, Text, Container, PageModuleEditor }}
+          >
+            <Frame>
+              <Element
+                is={Container}
+                padding={5}
+                background="transparent"
+                canvas
+              >
+                {page.modules?.map((d: any, i: number) => (
+                  <PageModuleEditor
+                    key={d.id}
+                    module={d}
+                    onChange={moduleChange(i)}
+                  />
+                ))}
+              </Element>
+            </Frame>
+            <SettingsPanel />
+            <Topbar />
+          </Editor>
         </div>
       ) : (
         <p>loading...</p>
