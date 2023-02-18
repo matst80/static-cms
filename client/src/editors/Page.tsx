@@ -1,5 +1,6 @@
 import { Editor, Frame, Element } from "@craftjs/core";
 import { useEffect, useState } from "react";
+import { Form, useFetcher, useLoaderData } from "react-router-dom";
 import { Page, PageModule } from "slask-cms";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
@@ -18,12 +19,14 @@ import PageModuleEditor from "./PageModule";
 //   }).then((d) => d.json());
 
 export default function PageEditor({ url }: any) {
-  const [page, setPage] = useState<Page | undefined>();
-  const { getPage, savePage } = useCms();
-  useEffect(() => {
-    getPage(url).then(setPage);
-  }, [url, getPage]);
-  const changeHandler = changeHandlerFactory(page, setPage);
+  // const [page, setPage] = useState<Page | undefined>();
+  // const { getPage, savePage } = useCms();
+  // useEffect(() => {
+  //   getPage(url).then(setPage);
+  // }, [url, getPage]);
+  const page = useLoaderData() as Page;
+  const fetcher = useFetcher();
+  const changeHandler = changeHandlerFactory(page, console.log);
   const updateModule = changeHandler("modules");
   const moduleChange = (idx: number) => (data: PageModule) => {
     if (!page) return;
@@ -34,23 +37,25 @@ export default function PageEditor({ url }: any) {
   return (
     <div>
       {page ? (
-        <div>
+        <fetcher.Form method="post" id="page-form">
           <label>
             <span>Title</span>
             <input
-              value={page.seoTitle ?? ""}
-              onChange={changeHandler("seoTitle")}
+              name="seoTitle"
+              defaultValue={page.seoTitle ?? ""}
+              // onChange={changeHandler("seoTitle")}
             />
           </label>
           <label>
             <span>Description</span>
             <input
-              value={page.seoDescription ?? ""}
-              onChange={changeHandler("seoDescription")}
+              name="seoDescription"
+              defaultValue={page.seoDescription ?? ""}
+              // onChange={changeHandler("seoDescription")}
             />
           </label>
 
-          <button onClick={() => savePage(url, page)}>Save</button>
+          <button type="submit">Save</button>
           <Editor
             resolver={{ Card, Button, Text, Container, PageModuleEditor }}
           >
@@ -73,7 +78,7 @@ export default function PageEditor({ url }: any) {
             <SettingsPanel />
             <Topbar />
           </Editor>
-        </div>
+        </fetcher.Form>
       ) : (
         <p>loading...</p>
       )}
