@@ -24,6 +24,7 @@ export type CmsApi = {
   getUrls(url?: string): Promise<{ url: string; title?: string }[]>;
   getTree(url?: string): Promise<TreeNode[]>;
   savePage(url: string, page: Page): Promise<any>;
+  updatePage(url: string, page: Partial<Page>): Promise<any>;
 };
 
 export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
@@ -43,9 +44,15 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
         asJson<TreeNode[]>(d)
       );
     },
-    savePage(url, page): Promise<any> {
+    savePage(url, page) {
       return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`, {
         method: "POST",
+        body: JSON.stringify(page),
+      }).then((d) => asJson<Page>(d));
+    },
+    updatePage(url, page) {
+      return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`, {
+        method: "PUT",
         body: JSON.stringify(page),
       }).then((d) => asJson<Page>(d));
     },

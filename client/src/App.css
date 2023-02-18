@@ -1,5 +1,8 @@
-#root {
+.cms-app {
+  display: flex;
+  height: 100vh;
+}
 
-  padding: 2rem;
-
+.cms-app form {
+  border-right: solid 1px #ccc;
 }
