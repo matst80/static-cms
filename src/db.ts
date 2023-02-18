@@ -59,5 +59,8 @@ export const redisStorage = (
         )
       );
     },
+    getPage(url) {
+      return client.hGet(Page, url).then(d=>d?JSON.parse(d):undefined);
+    },
   };
 };

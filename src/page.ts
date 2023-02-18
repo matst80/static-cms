@@ -40,9 +40,7 @@ const prepairPage = <T extends PageUpdate>(fn: (page: T) => Promise<T>) => (page
 type PageUpdate = { url: string } & Partial<Page>;
 
 export const pageFactory = (db: StorageProvider) => {
-  const loadPage = (path: string) =>
-    readFile(path, "utf-8").then((jsonText) => JSON.parse(jsonText));
-
+  
   const savePage = (page: Page):Promise<Page> =>
     Promise.all([
       ...(page.modules ? saveModules(page.modules) : []),
@@ -58,8 +56,8 @@ export const pageFactory = (db: StorageProvider) => {
 
   const saveModules = saveModulesFactory(db);
   const updatePage = ({ url, ...page }: PageUpdate) => getStoragePathFromUrl(url, "page")
-      .then(loadPage)
-      .then((original) => savePage({ ...original, ...page, url }));
+      .then(path=>db.getPage(path))
+      .then((original) => savePage({ ...original!, ...page, url }));
   
   const storePages = (...pages: Page[]) =>
     Promise.all(pages.map(prepairPage(savePage)));

@@ -27,11 +27,12 @@ export const pageHandlerFactory = (db: StorageProvider):SectionHandler => {
         return await storePages({ ...(await body), url: path });
       }
       case "PUT": {
+				const data = await body;
         const { exists } = await fileStatus;
         if (exists) {
-          return await updatePage({ ...(await body), url: path });
+          return await updatePage({ ...data, url: path });
         }
-        return;
+        return {notFound:path};
       }
     }
   };

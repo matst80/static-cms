@@ -18,7 +18,8 @@ const json = (req: http.IncomingMessage) =>
       })
       .on("end", () => {
         try {
-          res(JSON.parse(Buffer.concat(body).toString()));
+          const text = Buffer.concat(body).toString();
+          res(JSON.parse(text));
         } catch (err) {
           rej(err);
         }
