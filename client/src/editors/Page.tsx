@@ -5,14 +5,13 @@ import { Page, PageModule } from "slask-cms";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Container } from "../components/Container";
-import Resolver from "../components/Resolver";
+import Resolver from "../modules/Resolver";
 import { SettingsPanel } from "../components/SettingsPanel";
 import { Text } from "../components/Text";
 import { Toolbox } from "../components/Toolbox";
 import { Topbar } from "../components/TopBar";
 import { useCms } from "../useCms";
 import { changeHandlerFactory } from "../utils";
-import PageModuleEditor from "./PageModule";
 
 // const savePage = (page: any) =>
 //   fetch("/page/" + page.url, {

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { CookiesProvider } from "react-cookie";
 import App from "./App";
 import "./index.css";
+import "flowbite";
 import { CmsProvider } from "./useCms";
 
 import { QueryClient, QueryClientProvider } from "react-query";
