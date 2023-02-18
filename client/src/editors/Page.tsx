@@ -1,12 +1,14 @@
 import { Editor, Frame, Element } from "@craftjs/core";
-import { useEffect, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import { Form, useFetcher, useLoaderData } from "react-router-dom";
 import { Page, PageModule } from "slask-cms";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Container } from "../components/Container";
+import Resolver from "../components/Resolver";
 import { SettingsPanel } from "../components/SettingsPanel";
 import { Text } from "../components/Text";
+import { Toolbox } from "../components/Toolbox";
 import { Topbar } from "../components/TopBar";
 import { useCms } from "../useCms";
 import { changeHandlerFactory } from "../utils";
@@ -18,26 +20,26 @@ import PageModuleEditor from "./PageModule";
 //     headers: { authorization: "Bearer a", "content-type": "application/json" },
 //   }).then((d) => d.json());
 
-export default function PageEditor({ url }: any) {
-  // const [page, setPage] = useState<Page | undefined>();
-  // const { getPage, savePage } = useCms();
-  // useEffect(() => {
-  //   getPage(url).then(setPage);
-  // }, [url, getPage]);
-  const page = useLoaderData() as Page;
+export default function PageEditor() {
+  const loadedPage = useLoaderData() as Page;
+  const [page, setPage] = useState<Page | undefined>();
+  const { savePage } = useCms();
+  useEffect(() => {
+    setPage(loadedPage);
+  }, [loadedPage]);
 
-  const changeHandler = changeHandlerFactory(page, console.log);
+  const changeHandler = changeHandlerFactory(page, setPage);
   const updateModule = changeHandler("modules");
-  const moduleChange = (idx: number) => (data: PageModule) => {
-    if (!page) return;
-    const modules = [...page.modules];
-    modules[idx] = data;
-    updateModule(modules);
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    if (page?.url) {
+      savePage(page.url, page);
+    }
   };
   return (
-    <div>
+    <div className="flex flex-1">
       {page ? (
-        <Form method="post" id="page-form">
+        <Form method="post" id="page-form" onSubmit={handleSubmit}>
           <label>
             <span>Title</span>
             <input
@@ -55,29 +57,30 @@ export default function PageEditor({ url }: any) {
             />
           </label>
 
-          <button type="submit">Save</button>
           <Editor
-            resolver={{ Card, Button, Text, Container, PageModuleEditor }}
+            resolver={{
+              Card,
+              Button,
+              Text,
+              Container,
+              Resolver,
+            }}
           >
-            <Frame>
-              <Element
-                is={Container}
-                padding={5}
-                background="transparent"
-                canvas
-              >
-                {page.modules?.map((d: any, i: number) => (
-                  <PageModuleEditor
-                    key={d.id}
-                    module={d}
-                    onChange={moduleChange(i)}
-                  />
-                ))}
-              </Element>
-            </Frame>
-            <SettingsPanel />
-            <Topbar />
+            <div className="flex">
+              <Frame>
+                <Element is={Container} canvas>
+                  {page.modules?.map((d) => (
+                    <Resolver key={d.id} {...d} />
+                  ))}
+                </Element>
+              </Frame>
+              <SettingsPanel />
+            </div>
+            <Toolbox />
+            <Topbar onChange={updateModule} />
           </Editor>
+
+          <button type="submit">Save</button>
         </Form>
       ) : (
         <p>loading...</p>

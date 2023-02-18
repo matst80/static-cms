@@ -1,8 +1,0 @@
-.cms-app {
-  display: flex;
-  height: 100vh;
-}
-
-.cms-app form {
-  border-right: solid 1px #ccc;
-}

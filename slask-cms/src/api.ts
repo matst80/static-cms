@@ -54,6 +54,9 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
       return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`, {
         method: "PUT",
         body: JSON.stringify(page),
+        headers:{
+          
+        }
       }).then((d) => asJson<Page>(d));
     },
   };

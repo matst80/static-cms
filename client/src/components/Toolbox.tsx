@@ -1,7 +1,12 @@
 import React from "react";
+import { Element, useEditor } from "@craftjs/core";
 import { Button } from "./Button";
+import { Text } from "./Text";
+import { Container } from "./Container";
+import { Card } from "./Card";
 
 export const Toolbox = () => {
+  const { connectors, query } = useEditor();
   return (
     <div>
       <div style={{ display: "flex" }}>
@@ -9,16 +14,35 @@ export const Toolbox = () => {
           <span>Drag to add</span>
         </div>
         <div>
-          <Button>Button</Button>
+          <button
+            ref={(ref) =>
+              connectors.create(ref, <Button text="Click me" size="small" />)
+            }
+          >
+            Button
+          </button>
         </div>
         <div>
-          <Button>Text</Button>
+          <button
+            ref={(ref) => connectors.create(ref, <Text text="Click me" />)}
+          >
+            Text
+          </button>
         </div>
         <div>
-          <Button>Container</Button>
+          <button
+            ref={(ref) =>
+              connectors.create(
+                ref,
+                <Element is={Container} padding={20} canvas />
+              )
+            }
+          >
+            Container
+          </button>
         </div>
         <div>
-          <Button>Card</Button>
+          <button ref={(ref) => connectors.create(ref, <Card />)}>Card</button>
         </div>
       </div>
     </div>

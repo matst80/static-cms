@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useLoaderData } from "react-router-dom";
-import "./App.css";
 import { useCms } from "./useCms";
 
 function App() {
@@ -23,10 +22,10 @@ function App() {
     slug: { url: string; title?: string }[];
   };
   return (
-    <div className="cms-app">
+    <div className="flex">
       <form onSubmit={createNewPage}>
         {slug?.map(({ url, title }) => (
-          <Link key={url} to={url}>
+          <Link key={url} to={`/page/${url}`}>
             {title?.length ? title : url}
           </Link>
         ))}
