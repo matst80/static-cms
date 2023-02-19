@@ -1,16 +1,14 @@
-import { PageModuleData, Settings } from "slask-cms";
-import { Schema } from "../editors/editor-types";
-import { makeModuleSchema, pageModuleSchema } from "./schemas";
+import { PageModuleData } from "slask-cms";
+import { makeModuleSchema } from "./schemas";
 
-type TestModuleProps = {
-  text: string;
-};
-
-type TestModuleSettings = Settings & {
-  padding?: number;
-};
-
-type TestModule = PageModuleData<TestModuleProps, TestModuleSettings>;
+type TestModule = PageModuleData<
+  {
+    text: string;
+  },
+  {
+    padding?: number;
+  }
+>;
 
 export default function TestModuleComponent({
   props = { text: "" },
