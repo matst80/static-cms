@@ -1,8 +1,8 @@
-import { Settings, PageModule, PageModuleData } from "slask-cms";
-import DatePicker from "../components/DatePicker"
+import { Settings, PageModule, PageModuleWithProps } from "slask-cms";
+import DatePicker from "../components/DatePicker";
 import { Schema } from "../editors/editor-types";
-import { PageModulesEditor } from "../editors/PageModulesEditor"
-import { ModuleTypeSelector } from "./ModuleTypeSelector"
+import { PageModulesEditor } from "../editors/PageModulesEditor";
+import { ModuleTypeSelector } from "./ModuleTypeSelector";
 
 export const settingsSchema: Schema<Settings> = {
   validFrom: {
@@ -24,31 +24,36 @@ export const pageModuleSchema: Schema<PageModule> = {
     type: ModuleTypeSelector,
     title: "Module type",
   },
-	props: {
-		title:'Properties',
-		schema: {}
-	},
-	modules: {
-		title:'Modules',
-		type: PageModulesEditor,
-	},
+  props: {
+    title: "Properties",
+    schema: {},
+  },
+  modules: {
+    title: "Modules",
+    type: PageModulesEditor,
+  },
   settings: {
     schema: settingsSchema,
     title: "Settings",
   },
 };
 
-export const makeModuleSchema = <TParent extends PageModuleData<Record<string,unknown>,Settings>>(
-  props?: Schema<TParent["props"]>,
-  settings?: Schema<TParent["settings"]>
-): Schema<PageModule> => {
-	
+export const makeModuleSchema = <
+  TProps extends Record<string, unknown>={},
+  TSettings extends Record<string, unknown> = {}
+>(
+  props: Schema<TProps>,
+  settings?: Schema<TSettings>
+): Schema<PageModuleWithProps<TProps>> => {
   return {
     ...pageModuleSchema,
-    props:props?{...pageModuleSchema.props, schema:props}:pageModuleSchema.props,
+    props: {
+      title:'Properties',
+      schema:props as any
+    },
     settings: {
-			...pageModuleSchema.settings,
-			schema: {...settingsSchema as any, ...settings??{}}
-		},
+      ...pageModuleSchema.settings,
+      schema: { ...(settingsSchema as any), ...(settings ?? {}) },
+    },
   };
 };

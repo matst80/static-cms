@@ -1,5 +1,5 @@
+import { MouseEventHandler } from "react";
 import { PageModule } from "slask-cms";
-import { modules } from "../modules/Resolver";
 import PageModuleEditor from "./PageModuleEditor";
 
 type PageModulesProps = {
@@ -13,10 +13,14 @@ export function PageModulesEditor({ data = [], onChange }: PageModulesProps) {
     modules[idx] = module;
     onChange(modules);
   };
-  const remove = (id?: string) => () => {
-    onChange([...data].filter((d) => d.id !== id));
-  };
-  const addModule = () => {
+  const remove =
+    (id?: string): MouseEventHandler<HTMLButtonElement> =>
+    (e) => {
+      e.preventDefault();
+      onChange([...data].filter((d) => d.id !== id));
+    };
+  const addModule: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
     onChange([
       ...data,
       {

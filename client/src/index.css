@@ -4,11 +4,11 @@
 
 @layer base {
 	.btn {
-		@apply flex items-center p-2 text-base font-normal text-gray-900 rounded-lg;
+		@apply p-4 rounded-lg shadow-lg bg-pink-500;
 	}
 
 	.lnk {
-		@apply flex items-center p-2 text-base font-normal text-gray-900 rounded-lg;
+		@apply p-4 rounded-lg shadow-lg bg-pink-500;
 	}
 
 	.field label>span {

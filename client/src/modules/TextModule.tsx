@@ -1,15 +1,24 @@
-import { PageModuleData } from "slask-cms";
+import { ModuleProps } from "slask-cms";
 import { makeModuleSchema } from "./schemas";
 
-type TextModuleProps = PageModuleData<{
+type TextProps = {
+  header: string;
   text: string;
-}>;
+};
 
-export default function TextModule({ props = { text: "" } }: TextModuleProps) {
-  const { text } = props;
-  return <p>{text}</p>;
+export default function TextModule({
+  text = "",
+  header,
+}: ModuleProps<TextProps>) {
+  return (
+    <div>
+      {header != null && <h2>{header}</h2>}
+      <p>{text}</p>
+    </div>
+  );
 }
 
-TextModule.schema = makeModuleSchema<TextModuleProps>({
+TextModule.schema = makeModuleSchema<TextProps>({
+  header: { type: "string", title: "Header" },
   text: { type: "string", title: "Text" },
 });

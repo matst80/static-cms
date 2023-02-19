@@ -10,13 +10,13 @@ export type Page = {
   modified?: number;
 };
 
-export type PageModuleWithProps<T extends object> = {
+export type PageModuleWithProps<T extends Record<string,unknown>, TSettings extends Settings = Settings> = {
     type: string;
     id?: string;
     props?: T
     links?: Link[];
     pictures?: Picture[];
-    settings: Settings;
+    settings: TSettings;
     modules?: PageModule[];
 }
 
@@ -25,7 +25,6 @@ export type PageModule = PageModuleWithProps<Record<string,unknown>>;
 export type Settings = {
   validTo?: number;
   validFrom?: number;
-  [key: string]: unknown;
 };
 
 export type Link = {
@@ -36,4 +35,12 @@ export type Link = {
 
 export type Picture = {
   src: string;
+};
+
+export type ModuleProps<
+  TProps extends Record<string, unknown>,
+  TSettings extends Settings = Settings
+> = TProps & {
+  settings: TSettings;
+  modules?: PageModule[];
 };

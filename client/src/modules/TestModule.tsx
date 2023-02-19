@@ -1,24 +1,31 @@
-import { PageModuleData } from "slask-cms";
+import { ModuleProps } from "slask-cms";
+import Resolver from "./Resolver";
 import { makeModuleSchema } from "./schemas";
 
-type TestModuleProps = PageModuleData<
-  {
-    text: string;
-  },
-  {
-    padding?: number;
-  }
->;
+type Props = {
+  text: string;
+};
+
+type Settings = {
+  padding: number;
+};
 
 export default function TestModule({
-  props = { text: "" },
+  text = "",
+  modules,
   settings: { padding = 10 },
-}: TestModuleProps) {
-  const { text } = props;
-  return <div style={{ padding: `${padding}px` }}>{text}</div>;
+}: ModuleProps<Props, Settings>) {
+  return (
+    <div style={{ padding: `${padding}px` }}>
+      <p>{text}</p>
+      {modules?.map((module) => (
+        <Resolver key={module.id} {...module} />
+      ))}
+    </div>
+  );
 }
 
-TestModule.schema = makeModuleSchema<TestModuleProps>(
+TestModule.schema = makeModuleSchema<Props, Settings>(
   {
     text: { type: "string", title: "Text" },
   },
