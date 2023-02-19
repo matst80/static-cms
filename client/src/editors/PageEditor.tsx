@@ -4,7 +4,7 @@ import { Page } from "slask-cms";
 import { useCms } from "../useCms";
 import { Schema } from "./editor-types";
 import ObjectEditor from "./ObjectEditor";
-import { PageModulesEditor } from "./PageModuleEditor";
+import { PageModulesEditor } from "./PageModulesEditor";
 
 const pageSchema: Schema<Page> = {
   id: {

@@ -1,7 +1,7 @@
 import { PageModuleData } from "slask-cms";
 import { makeModuleSchema } from "./schemas";
 
-type TestModule = PageModuleData<
+type TestModuleProps = PageModuleData<
   {
     text: string;
   },
@@ -10,14 +10,15 @@ type TestModule = PageModuleData<
   }
 >;
 
-export default function TestModuleComponent({
+export default function TestModule({
   props = { text: "" },
   settings: { padding = 10 },
-}: TestModule) {
+}: TestModuleProps) {
   const { text } = props;
   return <div style={{ padding: `${padding}px` }}>{text}</div>;
 }
-TestModuleComponent.schema = makeModuleSchema<TestModule>(
+
+TestModule.schema = makeModuleSchema<TestModuleProps>(
   {
     text: { type: "string", title: "Text" },
   },

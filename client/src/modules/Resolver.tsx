@@ -1,14 +1,11 @@
-import { PageModule, PageModuleData } from "slask-cms";
+import { PageModule } from "slask-cms";
 import { Schema } from "../editors/editor-types";
+import { NotFound } from "./NotFound";
 import { pageModuleSchema } from "./schemas";
 import TestModule from "./TestModule";
+import TextModule from "./TextModule";
 
-const NotFound = ({ type }: any) => {
-  return <div>not found {type}</div>;
-};
-NotFound.schema = pageModuleSchema;
-
-export const modules = { NotFound, TestModule };
+export const modules = { NotFound, TestModule, TextModule };
 
 export default function Resolver({ type, ...module }: PageModule) {
   const Module = (modules as any)[type];
@@ -16,5 +13,5 @@ export default function Resolver({ type, ...module }: PageModule) {
 }
 
 export const getModuleSchema = (type: string): Schema<PageModule> => {
-  return ((modules as any)[type] ?? NotFound).schema;
+  return ((modules as any)[type] ?? NotFound).schema ?? pageModuleSchema;
 };
