@@ -23,8 +23,8 @@ const saveModulesFactory = (db: StorageProvider) => {
       .map(
         appendModuleId(db.getId, (module) => [
           db.saveModule(module),
-          compressStaticFile(getStoragePathFromModule(module), module),
-          ...(module.modules ? saveModules(module.modules) : []),
+          // compressStaticFile(getStoragePathFromModule(module), module),
+           ...(module.modules ? saveModules(module.modules) : []),
         ])
       )
       .flat();
