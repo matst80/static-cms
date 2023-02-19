@@ -1,12 +1,22 @@
 import { Settings } from "slask-cms";
+import DatePicker from "../components/DatePicker";
 import { changeHandlerFactory } from "../utils";
-import { Schema } from "./editor-types";
+import { FieldEditorProps, Schema } from "./editor-types";
 import ObjectEditor from "./ObjectEditor";
 
-type SettingsProps<T extends Settings> = {
-  data: T;
-  schema?: Schema<T>;
-  onChange: (data: T) => void;
+export const settingsSchema: Schema<Settings> = {
+  validFrom: {
+    title: "Valid from date:",
+    type: DatePicker,
+  },
+  validTo: {
+    title: "Valid to date:",
+    type: DatePicker,
+  },
+};
+
+type SettingsProps<T extends Settings> = Omit<FieldEditorProps<T>, "schema"> & {
+  schema: Schema<T>;
 };
 
 export default function SettingsEditor<T extends Settings>({
@@ -14,25 +24,29 @@ export default function SettingsEditor<T extends Settings>({
   schema,
   onChange,
 }: SettingsProps<T>) {
-  //const { validFrom, validTo, ...other } = data;
+  if (!data) return null;
+  const { validFrom, validTo } = data;
   const changeHandler = changeHandlerFactory(data, onChange);
   return (
     <div>
-      {schema ? (
-        <ObjectEditor data={data} schema={schema} onChange={onChange} />
-      ) : (
-        Object.entries(data).map(([key, value]) => (
-          <div key={key}>
-            <label>
-              <span>{key}</span>
-              <input
-                value={String(value)}
-                onChange={changeHandler(key as keyof T)}
-              />
-            </label>
-          </div>
-        ))
-      )}
+      <div>
+        <DatePicker
+          data={validFrom}
+          max={validTo}
+          onChange={changeHandler("validFrom")}
+        />
+        <DatePicker
+          data={validTo}
+          min={validFrom}
+          onChange={changeHandler("validTo")}
+        />
+      </div>
+      <ObjectEditor
+        data={data}
+        schema={schema}
+        ignoredFields={["validFrom", "validTo"]}
+        onChange={onChange}
+      />
     </div>
   );
 }

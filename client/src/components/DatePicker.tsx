@@ -1,10 +1,19 @@
 import { FieldEditor } from "../editors/editor-types";
 
-const DatePicker: FieldEditor<number | undefined> = ({ data, onChange }) => {
+const DatePicker: FieldEditor<number, { min?: number; max?: number }> = ({
+  data,
+  onChange,
+  min,
+  max,
+}) => {
+  const iso = (n?: number) =>
+    n ? new Date(n).toISOString().substring(0, 16) : undefined;
   return (
     <input
       type="datetime-local"
-      value={data ? new Date(data).toISOString().substring(0, 16) : ""}
+      value={iso(data) ?? ""}
+      min={iso(min)}
+      max={iso(max)}
       onChange={(e) => onChange(new Date(e.target.value).getTime())}
     />
   );

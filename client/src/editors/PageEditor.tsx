@@ -2,15 +2,12 @@ import { FormEventHandler, useEffect, useState } from "react";
 import { Form, useLoaderData } from "react-router-dom";
 import { Page } from "slask-cms";
 import { useCms } from "../useCms";
+import { stop } from "../utils";
 import { Schema } from "./editor-types";
 import ObjectEditor from "./ObjectEditor";
 import { PageModulesEditor } from "./PageModulesEditor";
 
 const pageSchema: Schema<Page> = {
-  id: {
-    type: "string",
-    title: "Unique id",
-  },
   url: {
     type: "string",
     title: "Url",
@@ -25,24 +22,25 @@ const pageSchema: Schema<Page> = {
   },
   modules: {
     type: PageModulesEditor,
+    hideTitle: true,
     title: "Page modules",
   },
 };
 
 export default function PageEditor() {
   const loadedPage = useLoaderData() as Page;
-  const [page, setPage] = useState<Page | undefined>();
+  const [page, setPage] = useState<Page | undefined>(loadedPage);
   const { savePage } = useCms();
   useEffect(() => {
     setPage(loadedPage);
   }, [loadedPage]);
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
+  const handleSubmit = stop((e) => {
+    console.log(e);
     if (page?.url) {
       savePage(page.url, page);
     }
-  };
+  });
 
   return (
     <div className="flex flex-1">
@@ -60,13 +58,14 @@ export default function PageEditor() {
           </span>
 
           <ObjectEditor onChange={setPage} data={page} schema={pageSchema} />
-
-          <button className="btn" type="submit">
-            Save
-          </button>
-          <button className="btn" type="submit">
-            Delete
-          </button>
+          <div className="toolbox">
+            <button className="btn" type="submit">
+              Save
+            </button>
+            <button className="btn" name="delete">
+              Delete
+            </button>
+          </div>
         </Form>
       ) : (
         <p>loading...</p>

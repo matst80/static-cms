@@ -15,7 +15,7 @@ export type PageModuleWithProps<T extends Record<string,unknown>, TSettings exte
     id?: string;
     props?: T
     links?: Link[];
-    pictures?: Picture[];
+    images?: Image[];
     settings: TSettings;
     modules?: PageModule[];
 }
@@ -33,14 +33,16 @@ export type Link = {
   title?: string;
 };
 
-export type Picture = {
+export type Image = {
   src: string;
 };
 
 export type ModuleProps<
   TProps extends Record<string, unknown>,
-  TSettings extends Settings = Settings
+  TSettings extends Record<string, unknown>={}
 > = TProps & {
-  settings: TSettings;
+  settings: Settings & TSettings;
+  links?: Link[];
+  images?: Image[];
   modules?: PageModule[];
 };

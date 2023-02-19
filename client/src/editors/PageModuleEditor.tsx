@@ -1,24 +1,20 @@
 import { PageModule } from "slask-cms";
 import { getModuleSchema } from "../modules/Resolver";
+import { FieldEditorProps } from "./editor-types";
 import ObjectEditor from "./ObjectEditor";
-
-type PageModuleEditorProps = {
-  data: PageModule;
-  onChange: (data: PageModule) => void;
-};
 
 export default function PageModuleEditor({
   data,
   onChange,
-}: PageModuleEditorProps) {
+}: FieldEditorProps<PageModule>) {
+  if (!data) {
+    return null;
+  }
   const { type } = data;
+  const schema = getModuleSchema(type);
   return (
     <div>
-      <ObjectEditor
-        onChange={onChange}
-        data={data}
-        schema={getModuleSchema(type)}
-      />
+      <ObjectEditor onChange={onChange} data={data} schema={schema} />
     </div>
   );
 }

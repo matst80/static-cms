@@ -1,19 +1,8 @@
-import { Settings, PageModule, PageModuleWithProps } from "slask-cms";
-import DatePicker from "../components/DatePicker";
+import { PageModule, PageModuleWithProps } from "slask-cms";
 import { Schema } from "../editors/editor-types";
 import { PageModulesEditor } from "../editors/PageModulesEditor";
+import SettingsEditor, { settingsSchema } from "../editors/SettingsEditor";
 import { ModuleTypeSelector } from "./ModuleTypeSelector";
-
-export const settingsSchema: Schema<Settings> = {
-  validFrom: {
-    title: "Valid from date:",
-    type: DatePicker,
-  },
-  validTo: {
-    title: "Valid to date:",
-    type: DatePicker,
-  },
-};
 
 export const pageModuleSchema: Schema<PageModule> = {
   id: {
@@ -33,13 +22,14 @@ export const pageModuleSchema: Schema<PageModule> = {
     type: PageModulesEditor,
   },
   settings: {
+    type: SettingsEditor,
     schema: settingsSchema,
     title: "Settings",
   },
 };
 
 export const makeModuleSchema = <
-  TProps extends Record<string, unknown>={},
+  TProps extends Record<string, unknown> = {},
   TSettings extends Record<string, unknown> = {}
 >(
   props: Schema<TProps>,
@@ -48,11 +38,12 @@ export const makeModuleSchema = <
   return {
     ...pageModuleSchema,
     props: {
-      title:'Properties',
-      schema:props as any
+      title: "Properties",
+      schema: props as any,
     },
     settings: {
-      ...pageModuleSchema.settings,
+      title: "Settings",
+      type: SettingsEditor,
       schema: { ...(settingsSchema as any), ...(settings ?? {}) },
     },
   };
