@@ -6,7 +6,7 @@ export type FieldEditorProps<T, TParent = unknown> = {
 };
 
 export type FieldEditorSchemaProps<
-  T extends Object = object,
+  T extends Record<string,unknown>,
   TParent = unknown
 > = {
   data: T|undefined;
@@ -34,8 +34,8 @@ export type FieldProps<T> = T extends Record<string,unknown>
   ? FieldEditorSchemaProps<T>
   : FieldEditorProps<T>;
 
-export type FieldEditor<T,TProps={}> = (props: FieldProps<T> & TProps) => JSX.Element|null;
+export type FieldEditor<T,TProps=Record<string,never>> = (props: FieldProps<T> & TProps) => JSX.Element|null;
 
-export type Schema<T extends object> = {
+export type Schema<T> = {
   [key in keyof T]: SchemaEditor | SchemaField<NonNullable<T[key]>>;
 };

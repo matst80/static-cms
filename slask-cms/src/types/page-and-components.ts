@@ -1,7 +1,6 @@
 export type BaseData = { [key: string]: unknown };
 
 export type Page = {
-  id: string;
   url: string;
   seoTitle?: string;
   seoDescription?: string;
@@ -35,11 +34,12 @@ export type Link = {
 
 export type Image = {
   src: string;
+  title: string;
 };
 
 export type ModuleProps<
   TProps extends Record<string, unknown>,
-  TSettings extends Record<string, unknown>={}
+  TSettings extends Record<string, unknown>=Record<string,never>
 > = TProps & {
   settings: Settings & TSettings;
   links?: Link[];

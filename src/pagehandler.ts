@@ -19,6 +19,7 @@ export const pageHandlerFactory = (db: StorageProvider):SectionHandler => {
         if (path.endsWith('_urls')) {
           return {path};
         }
+        return {slask:1}
       }
       case "DELETE": {
         const { exists, filePath } = await fileStatus;
@@ -30,10 +31,10 @@ export const pageHandlerFactory = (db: StorageProvider):SectionHandler => {
         return;
       }
       case "POST": {
-        return await storePages({ ...(await body), url: path });
+        return await storePages({ ...(await body()), url: path });
       }
       case "PUT": {
-				const data = await body;
+				const data = await body();
         const { exists } = await fileStatus;
         if (exists) {
           return await updatePage({ ...data, url: path });

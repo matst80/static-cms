@@ -1,11 +1,11 @@
 import http from "http";
 
 export type JsonRequest = http.IncomingMessage & {
-  body: null | Promise<any>;
+  body: ()=>null | Promise<unknown>;
 };
 
 export type JsonResponse = http.ServerResponse<http.IncomingMessage> & {
-  json: (data: Promise<any>) => void;
+  json: <R>(data: Promise<R>) => void;
   error: (err: Error | string) => void;
 };
 
@@ -61,13 +61,13 @@ export const jsonRequest =
     if (url?.startsWith("/auth/")) {
       return authHandler(req, res);
     }
-    (req as JsonRequest).body = method==='GET'?null:json(req);
+    (req as JsonRequest).body = ()=>method==='GET'?null:json(req);
     (res as JsonResponse).json = (prm) => handle(res, prm);
     (res as JsonResponse).error = (err) => error(res, err);
     handle(res, handler(req as JsonRequest, res as JsonResponse));
   };
 
-const handle = <T extends any>(
+const handle = <T>(
   res: http.ServerResponse<http.IncomingMessage>,
   prm: Promise<T>
 ) =>

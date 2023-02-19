@@ -1,4 +1,4 @@
-import { PageModule, PageModuleWithProps } from "slask-cms";
+import { PageModule, PageModuleWithProps, Settings } from "slask-cms";
 import { Schema } from "../editors/editor-types";
 import ImagesEditor from "../editors/ImagesEditor"
 import LinksEditor from "../editors/LinksEditor"
@@ -39,8 +39,8 @@ export const pageModuleSchema: Schema<PageModule> = {
 };
 
 export const makeModuleSchema = <
-  TProps extends Record<string, unknown> = {},
-  TSettings extends Record<string, unknown> = {}
+  TProps extends Record<string, unknown> = Record<string,never>,
+  TSettings extends Record<string, unknown> = Record<string,never>
 >(
   props: Schema<TProps>,
   settings?: Schema<TSettings>
@@ -49,7 +49,7 @@ export const makeModuleSchema = <
     ...pageModuleSchema,
     props: {
       title: "Properties",
-      schema: props as any,
+      schema: props as Schema<Record<string, unknown>>,
     },
     settings: {
       title: "Settings",
