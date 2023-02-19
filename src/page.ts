@@ -1,12 +1,10 @@
 import {
   compressStaticFile,
-  getStoragePathFromModule,
   getStoragePathFromPage,
   getStoragePathFromUrl,
 } from "./file-utils";
 import { StorageProvider } from "./types/db-provider";
 import { PageModule, Page } from "slask-cms";
-import { readFile } from "node:fs/promises";
 
 const appendModuleId =
   (idGenerator: () => string, fn: (module: PageModule) => Promise<unknown>[]) =>
