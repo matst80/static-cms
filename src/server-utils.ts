@@ -1,7 +1,7 @@
 import http from "http";
 
 export type JsonRequest = http.IncomingMessage & {
-  body: Promise<any>;
+  body: null | Promise<any>;
 };
 
 export type JsonResponse = http.ServerResponse<http.IncomingMessage> & {
@@ -57,11 +57,11 @@ export const jsonRequest =
     req: http.IncomingMessage,
     res: http.ServerResponse<http.IncomingMessage>
   ) => {
-    const { url } = req;
+    const { url,method } = req;
     if (url?.startsWith("/auth/")) {
       return authHandler(req, res);
     }
-    (req as JsonRequest).body = json(req);
+    (req as JsonRequest).body = method==='GET'?null:json(req);
     (res as JsonResponse).json = (prm) => handle(res, prm);
     (res as JsonResponse).error = (err) => error(res, err);
     handle(res, handler(req as JsonRequest, res as JsonResponse));

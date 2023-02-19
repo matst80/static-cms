@@ -1,19 +1,20 @@
-import { Element } from "@craftjs/core";
-import { PageModule } from "slask-cms";
-import { Container } from "../components/Container";
+import { PageModule, PageModuleData } from "slask-cms";
+import { Schema } from "../editors/editor-types";
+import { pageModuleSchema } from "./schemas";
+import TestModule from "./TestModule";
 
 const NotFound = ({ type }: any) => {
   return <div>not found {type}</div>;
 };
+NotFound.schema = pageModuleSchema;
 
-export const modules = { NotFound, Container, Resolver };
+export const modules = { NotFound, TestModule };
 
-export default function Resolver(module: PageModule) {
-  const { type, props, id } = module;
+export default function Resolver({ type, ...module }: PageModule) {
   const Module = (modules as any)[type];
-  return Module ? (
-    <Element is={Module} id={id} canvas {...props} />
-  ) : (
-    <NotFound type={type} />
-  );
+  return Module ? <Module {...module} /> : <NotFound type={type} />;
 }
+
+export const getModuleSchema = (type: string): Schema<PageModule> => {
+  return ((modules as any)[type] ?? NotFound).schema;
+};

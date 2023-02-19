@@ -1,3 +1,5 @@
+export type BaseData = { [key: string]: unknown };
+
 export type Page = {
   id: string;
   url: string;
@@ -8,15 +10,17 @@ export type Page = {
   modified?: number;
 };
 
-export type PageModule = {
-  type: string;
-  id?: string;
-  props: Record<string,unknown>;
-  links?: Link[];
-  pictures?: Picture[];
-  settings: Settings;
-  modules?: PageModule[];
-};
+export type PageModuleWithProps<T extends object> = {
+    type: string;
+    id?: string;
+    props?: T
+    links?: Link[];
+    pictures?: Picture[];
+    settings: Settings;
+    modules?: PageModule[];
+}
+
+export type PageModule = PageModuleWithProps<Record<string,unknown>>;
 
 export type Settings = {
   validTo?: number;

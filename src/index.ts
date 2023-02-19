@@ -61,9 +61,6 @@ const server = http.createServer(
       return res.writeHead(400, "Invalid section");
     }
 
-    if (method === "GET") {
-      return getHandler(req, res);
-    }
     if (!authorized(req)) {
       return res.writeHead(401).end();
     }

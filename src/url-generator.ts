@@ -12,9 +12,9 @@ export const urlGeneratorFactory = (db: StorageProvider) => {
     const urls = await db.getUrls();
     compressStaticFile(getStoragePathForUrlList(), urls, false);
     const tree = makeTree(
-      urls.map(({ url, title }) => ({ url: "/" + url, title }))
+      urls.map(({ url, title }) => ({ url, title }))
     );
-    console.log(tree);
+    
     if (tree) {
       compressStaticFile(getStoragePathForUrlTree(), tree, false);
     }

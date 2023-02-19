@@ -14,6 +14,12 @@ export const pageHandlerFactory = (db: StorageProvider):SectionHandler => {
     path,
   }) => {
     switch (method) {
+      case "GET": {
+        console.log(path);
+        if (path.endsWith('_urls')) {
+          return {path};
+        }
+      }
       case "DELETE": {
         const { exists, filePath } = await fileStatus;
         if (exists) {

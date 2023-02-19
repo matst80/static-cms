@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	.btn {
+		@apply flex items-center p-2 text-base font-normal text-gray-900 rounded-lg;
+	}
+
+	.lnk {
+		@apply flex items-center p-2 text-base font-normal text-gray-900 rounded-lg;
+	}
+
+	.field label>span {
+		display: block;
+	}
+
+	.field input {
+
+		border-bottom: solid 1px #ccc;
+
+	}
+}

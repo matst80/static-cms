@@ -3,13 +3,12 @@ import ReactDOM from "react-dom/client";
 import { CookiesProvider } from "react-cookie";
 import App from "./App";
 import "./index.css";
-import "flowbite";
 import { CmsProvider } from "./useCms";
 
 import { QueryClient, QueryClientProvider } from "react-query";
-import { createHashRouter, redirect, RouterProvider } from "react-router-dom";
-import PageEditor from "./editors/Page";
-import { cmsApiFactory, PageModule } from "slask-cms";
+import { createHashRouter, RouterProvider } from "react-router-dom";
+import PageEditor from "./editors/PageEditor";
+import { cmsApiFactory } from "slask-cms";
 import PagePreview from "./components/PagePreview";
 import ErrorPage from "./ErrorPage";
 
@@ -17,32 +16,29 @@ const baseUrl = "";
 
 const { getUrls, getPage } = cmsApiFactory(fetch, baseUrl);
 
-const pageLoader = ({ params: { slug } }: any) => getPage(slug ?? "");
+const pageLoader = (props: any) => {
+  const {
+    params: { "*": url },
+  } = props;
+  console.log(props);
+  const page = getPage(url ?? "");
+  return page;
+};
 
 const router = createHashRouter([
   {
     path: "/",
-    loader: () => {
-      return getUrls().then((slug) => ({ slug }));
-    },
+    loader: () => getUrls(),
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/page/:slug",
+        path: "/page/*",
         element: <PagePreview />,
         loader: pageLoader,
-        // action: async ({ request, params: { slug } }) => {
-        //   const formData = await request.formData();
-        //   const updates = Object.fromEntries(formData);
-
-        //   console.log(updates);
-        //   await updatePage(slug!, updates);
-        //   return redirect(`/${slug}`);
-        // },
       },
       {
-        path: "/page/:slug/edit",
+        path: "/page-edit/*",
         element: <PageEditor />,
         loader: pageLoader,
       },
