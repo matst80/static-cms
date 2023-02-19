@@ -1,43 +1,34 @@
 import { Editor, Frame, Element } from "@craftjs/core";
-import { useEffect, useState } from "react";
-import { Form, useFetcher, useLoaderData } from "react-router-dom";
-import { Page, PageModule } from "slask-cms";
-import { Button } from "../components/Button";
-import { Card } from "../components/Card";
+import { FormEventHandler, useEffect, useState } from "react";
+import { Form, useLoaderData } from "react-router-dom";
+import { Page } from "slask-cms";
 import { Container } from "../components/Container";
+import Resolver, { modules } from "../modules/Resolver";
 import { SettingsPanel } from "../components/SettingsPanel";
-import { Text } from "../components/Text";
-import { Topbar } from "../components/TopBar";
+import { Toolbox } from "../components/Toolbox";
+import { ModuleChangeHandler } from "../components/ModuleChangeHandler";
 import { useCms } from "../useCms";
 import { changeHandlerFactory } from "../utils";
-import PageModuleEditor from "./PageModule";
 
-// const savePage = (page: any) =>
-//   fetch("/page/" + page.url, {
-//     method: "POST",
-//     headers: { authorization: "Bearer a", "content-type": "application/json" },
-//   }).then((d) => d.json());
+export default function PageEditor() {
+  const loadedPage = useLoaderData() as Page;
+  const [page, setPage] = useState<Page | undefined>();
+  const { savePage } = useCms();
+  useEffect(() => {
+    setPage(loadedPage);
+  }, [loadedPage]);
 
-export default function PageEditor({ url }: any) {
-  // const [page, setPage] = useState<Page | undefined>();
-  // const { getPage, savePage } = useCms();
-  // useEffect(() => {
-  //   getPage(url).then(setPage);
-  // }, [url, getPage]);
-  const page = useLoaderData() as Page;
-
-  const changeHandler = changeHandlerFactory(page, console.log);
-  const updateModule = changeHandler("modules");
-  const moduleChange = (idx: number) => (data: PageModule) => {
-    if (!page) return;
-    const modules = [...page.modules];
-    modules[idx] = data;
-    updateModule(modules);
+  const changeHandler = changeHandlerFactory(page, setPage);
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    if (page?.url) {
+      savePage(page.url, page);
+    }
   };
   return (
-    <div>
+    <div className="flex flex-1">
       {page ? (
-        <Form method="post" id="page-form">
+        <Form method="post" id="page-form" onSubmit={handleSubmit}>
           <label>
             <span>Title</span>
             <input
@@ -55,29 +46,37 @@ export default function PageEditor({ url }: any) {
             />
           </label>
 
-          <button type="submit">Save</button>
-          <Editor
-            resolver={{ Card, Button, Text, Container, PageModuleEditor }}
-          >
-            <Frame>
-              <Element
-                is={Container}
-                padding={5}
-                background="transparent"
-                canvas
-              >
-                {page.modules?.map((d: any, i: number) => (
-                  <PageModuleEditor
-                    key={d.id}
-                    module={d}
-                    onChange={moduleChange(i)}
-                  />
-                ))}
-              </Element>
-            </Frame>
-            <SettingsPanel />
-            <Topbar />
+          <Editor resolver={modules}>
+            <div className="flex">
+              <Frame>
+                <Element is={Container} canvas>
+                  {page.modules?.map((d) => (
+                    <Resolver key={d.id} {...d} />
+                  ))}
+                </Element>
+              </Frame>
+              <div>
+                <Toolbox />
+
+                <SettingsPanel />
+              </div>
+            </div>
+
+            <ModuleChangeHandler onChange={changeHandler("modules")} />
           </Editor>
+
+          <button
+            className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            type="submit"
+          >
+            Save
+          </button>
+          <button
+            className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            type="submit"
+          >
+            Delete
+          </button>
         </Form>
       ) : (
         <p>loading...</p>

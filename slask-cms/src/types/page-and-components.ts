@@ -11,6 +11,7 @@ export type Page = {
 export type PageModule = {
   type: string;
   id?: string;
+  props: Record<string,unknown>;
   links?: Link[];
   pictures?: Picture[];
   settings: Settings;

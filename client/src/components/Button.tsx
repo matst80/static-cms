@@ -1,6 +1,6 @@
 import { useNode } from "@craftjs/core";
 
-export const Button = ({ size, variant, color, children }: any) => {
+export const Button = ({ size, variant, color, text }: any) => {
   console.log(variant, color);
   const {
     connectors: { connect, drag },
@@ -10,7 +10,7 @@ export const Button = ({ size, variant, color, children }: any) => {
       ref={(ref) => connect(drag(ref as HTMLElement))}
       style={{ padding: size, backgroundColor: color }}
     >
-      {children}
+      {text}
     </button>
   );
 };
