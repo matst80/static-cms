@@ -11,6 +11,7 @@ import { createHashRouter, redirect, RouterProvider } from "react-router-dom";
 import PageEditor from "./editors/Page";
 import { cmsApiFactory, PageModule } from "slask-cms";
 import PagePreview from "./components/PagePreview";
+import ErrorPage from "./ErrorPage";
 
 const baseUrl = "";
 
@@ -25,6 +26,7 @@ const router = createHashRouter([
       return getUrls().then((slug) => ({ slug }));
     },
     element: <App />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/page/:slug",
