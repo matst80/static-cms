@@ -21,26 +21,28 @@ function App() {
   const urls = useLoaderData() as { url: string; title?: string }[];
 
   return (
-    <div className="h-screen">
-      <div className="flex h-full">
-        <aside className="w-72 h-sceen border-r border-gray-400 p-6">
-          <ul className="space-y-2 flex-col">
-            {urls?.map(({ url, title }) => (
-              <li key={url}>
-                <Link to={`/page${url}`}>{title?.length ? title : url}</Link>
-              </li>
-            ))}
-          </ul>
-          <form onSubmit={createNewPage}>
-            <input
-              value={urlToCreate}
-              onChange={(e) => setUrlToCreate(e.target.value)}
-              placeholder="Create"
-            />
-            <div>
-              <a href="/auth/">Login</a>
-            </div>
-          </form>
+    <div>
+      <div className="flex">
+        <aside className="w-72 border-r min-h-screen border-gray-400 p-6">
+          <div className="sticky top-2">
+            <ul className="space-y-2 flex-col">
+              {urls?.map(({ url, title }) => (
+                <li key={url}>
+                  <Link to={`/page${url}`}>{title?.length ? title : url}</Link>
+                </li>
+              ))}
+            </ul>
+            <form onSubmit={createNewPage}>
+              <input
+                value={urlToCreate}
+                onChange={(e) => setUrlToCreate(e.target.value)}
+                placeholder="Create"
+              />
+              <div>
+                <a href="/auth/">Login</a>
+              </div>
+            </form>
+          </div>
         </aside>
 
         <div className="h-full flex-grow">
