@@ -2,6 +2,7 @@ import { pageFactory } from "./page";
 import http from "http";
 import {
   getSectionAndPath,
+  getStoragePathForImages,
   getStoragePathFromUrl,
   getVariants,
 } from "./file-utils";
@@ -14,7 +15,7 @@ import { authHandlerFactory } from "./auth";
 import { pageHandlerFactory } from "./pagehandler";
 import { SectionHandler } from "./types/server";
 import { authOptions } from "./settings";
-import formidable from 'formidable';
+import formidable from "formidable";
 
 const getHandler =
   process.env.NODE_ENV === "development"
@@ -42,20 +43,26 @@ const authorized = ({ headers }: http.IncomingMessage) => {
   // return validToken(authorization.split(" ")[1]);
 };
 
-const assetHandler:SectionHandler = async ({req,method}) => {
-  if (method==='POST') {
-    const form = formidable({ multiples: true });
-    return await new Promise((resolve,reject)=>{
-    form.parse(req, (err, fields, files) => {
-      if (err) {
-        reject(err);
-      }
-      resolve({ fields, files });
+const assetHandler: SectionHandler = async ({ req, method, path }) => {
+  if (method === "POST") {
+    console.log("upload");
+    const form = formidable({
+      multiples: true,
+      keepExtensions: true,
+      uploadDir: getStoragePathForImages(path.split("/")),
     });
-    })
+    return await new Promise((resolve, reject) => {
+      form.parse(req, (err, fields, files) => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve({ fields, files });
+      });
+    });
   }
-  return {status:'not implemented'}
-}
+  return { status: "not implemented" };
+};
 
 const sectionHandlers: Record<StorageSections, SectionHandler> = {
   page: pageHandler,
@@ -83,7 +90,8 @@ const server = http.createServer(
     }
 
     return sectionHandlers[section]({
-      req,res,
+      req,
+      res,
       fileStatus: getStoragePathFromUrl(path, section).then((filePath) => ({
         exists: existsSync(filePath),
         filePath,

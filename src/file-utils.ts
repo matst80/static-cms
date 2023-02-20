@@ -1,4 +1,4 @@
-import { createWriteStream, existsSync, ReadStream } from "node:fs";
+import { createWriteStream, existsSync, mkdirSync, ReadStream } from "node:fs";
 import { writeFile, mkdir, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { Readable } from "node:stream";
@@ -97,15 +97,23 @@ export const getStoragePathFromModule = ({ id }: PageModule) =>
 export const getStoragePathForUrlList = () =>
   join(staticPath, "page", `_urls.json`);
 
-  export const getStoragePathForUrlTree = () =>
+export const getStoragePathForUrlTree = () =>
   join(staticPath, "page", `_tree.json`);
 
-export const getPagesInDirectory = async (path:string)=>{
-  const pathSections = path.split('/');
-  pathSections.pop()
+export const getStoragePathForImages = (path?: string[]) => {
+  const fsPath = join(staticPath, "assets", ...(path ?? []));
+  mkdirSync(fsPath, { recursive: true });
+  return fsPath;
+};
+
+export const getPagesInDirectory = async (path: string) => {
+  const pathSections = path.split("/");
+  pathSections.pop();
   if (pathSections) {
-    const files = await readdir(join(staticPath,"page", ...pathSections));
-    return files.filter(d=>d.endsWith('.json')).map(d=>d.replace('.json',''))
+    const files = await readdir(join(staticPath, "page", ...pathSections));
+    return files
+      .filter((d) => d.endsWith(".json"))
+      .map((d) => d.replace(".json", ""));
   }
-  return []
-}
+  return [];
+};

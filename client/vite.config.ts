@@ -16,6 +16,10 @@ export default defineConfig({
         target: "https://cms.tornberg.me",
         changeOrigin: true,
       },
+      "^/assets/.*": {
+        target: "https://cms.tornberg.me",
+        changeOrigin: true,
+      },
       "/urls.json": {
         target: "https://cms.tornberg.me",
         changeOrigin: true,

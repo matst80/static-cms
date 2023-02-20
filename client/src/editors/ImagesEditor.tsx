@@ -25,7 +25,7 @@ function FileUploadMultiple() {
     });
 
     // 👇 Uploading the files using the fetch API to the server
-    fetch("https://cms.tornberg.me/assets/", {
+    fetch("/assets/images/", {
       method: "POST",
       body: data,
     })
