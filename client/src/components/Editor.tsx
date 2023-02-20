@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { PageModule } from "slask-cms";
-import { FieldEditorProps } from "../editors/editor-types";
+import { FieldEditorProps, Schema } from "../editors/editor-types";
 
 type EditingContext<T> = {
   state: EditingState;
@@ -15,7 +15,15 @@ type EditingContext<T> = {
 };
 
 type EditingState = {
-  selected?: { module: any; data: any };
+  selected?: {
+    schema: Schema<HasId>;
+    data: HasId;
+  };
+};
+
+export type HasId = {
+  id?: string;
+  [key: string]: unknown;
 };
 
 type EditorElement = HTMLElement & {
@@ -24,26 +32,31 @@ type EditorElement = HTMLElement & {
 
 const EditorContext = createContext<EditingContext<PageModule[]> | null>(null);
 
-export function useEditor<T>() {
+export function useEditor<T extends HasId, TSchema extends HasId>(
+  data: T,
+  schema: Schema<TSchema>
+) {
   const ctx = useContext(EditorContext);
-  return (data: T) => {
-    const selectListener = (e: Event) => {
-      e.stopPropagation();
-      ctx?.setState({ ...ctx.state, selected: { module, data } });
-    };
-    return (ref: HTMLElement | null) => {
-      if (!ref) return;
-      const elm = ref as EditorElement;
-      if (!elm._cmsinit) {
-        elm._cmsinit = 1;
+  const selectListener = (e: Event) => {
+    e.stopPropagation();
+    ctx?.setState({
+      ...ctx.state,
+      selected: { data, schema: schema as Schema<HasId> },
+    });
+  };
 
-        elm.addEventListener("click", selectListener);
-      }
-    };
+  return (ref: HTMLElement | null) => {
+    if (!ref) return;
+    const elm = ref as EditorElement;
+    if (!elm._cmsinit) {
+      elm._cmsinit = 1;
+
+      elm.addEventListener("click", selectListener);
+    }
   };
 }
 
-export function useSelected<T>() {
+export function useSelected<T extends HasId>() {
   const ctx = useContext(EditorContext);
   const result = useMemo(() => {
     const onChange = (data: T | undefined) => {
@@ -52,9 +65,10 @@ export function useSelected<T>() {
         selected: { ...ctx.state.selected, data } as any,
       });
     };
+    const { data, schema } = ctx?.state.selected ?? {};
     return {
-      Module: ctx?.state.selected?.module,
-      data: ctx?.state.selected?.data as T,
+      data: data as T,
+      schema: schema as Schema<T>,
       onChange,
     };
   }, [ctx]);

@@ -6,7 +6,11 @@ import "./index.css";
 import { CmsProvider } from "./useCms";
 
 import { QueryClient, QueryClientProvider } from "react-query";
-import { createHashRouter, RouterProvider } from "react-router-dom";
+import {
+  createHashRouter,
+  LoaderFunction,
+  RouterProvider,
+} from "react-router-dom";
 import PageEditor from "./editors/PageEditor";
 import { cmsApiFactory } from "slask-cms";
 import PagePreview from "./components/PagePreview";
@@ -16,13 +20,8 @@ const baseUrl = "";
 
 const { getUrls, getPage } = cmsApiFactory(fetch, baseUrl);
 
-const pageLoader = (props: any) => {
-  const {
-    params: { "*": url },
-  } = props;
-  console.log(props);
-  const page = getPage(url ?? "");
-  return page;
+const pageLoader: LoaderFunction = ({ params: { "*": url } }) => {
+  return getPage(url ?? "");
 };
 
 const router = createHashRouter([
@@ -48,7 +47,7 @@ const router = createHashRouter([
 
 const queryClient = new QueryClient();
 
-ReactDOM.createRoot(document.body).render(
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <CookiesProvider>
       <QueryClientProvider client={queryClient}>

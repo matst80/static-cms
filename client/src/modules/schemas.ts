@@ -20,11 +20,6 @@ export const pageModuleSchema: Schema<PageModule> = {
 		defaultValue:{},
     schema: {},
   },
-  modules: {
-    title: "Modules",
-		defaultValue:[],
-    type: PageModulesEditor,
-  },
 	links:{
 		title:'Links',
 		defaultValue:[],
@@ -40,6 +35,12 @@ export const pageModuleSchema: Schema<PageModule> = {
 		defaultValue:{},
     schema: settingsSchema,
     title: "Settings",
+  },
+	modules: {
+    title: "Modules",
+		hideTitle:true,
+		defaultValue:[],
+    type: PageModulesEditor,
   },
 };
 

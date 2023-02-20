@@ -44,7 +44,7 @@ export default function PageEditor() {
   });
 
   return (
-    <div className="flex flex-1">
+    <div className="w-full p-6">
       {page ? (
         <Form method="post" id="page-form" onSubmit={handleSubmit}>
           <span>

@@ -1,18 +1,21 @@
 import { PageModule } from "slask-cms";
-import ObjectEditor from "../editors/ObjectEditor";
+import PageModuleEditor from "../editors/PageModuleEditor";
+import { stop } from "../utils";
 import { useSelected } from "./Editor";
 
-export default function InlineEditor(props: any) {
-  const { Module, data, onChange } = useSelected<PageModule>();
+type InlineEditorProps<T> = {
+  save: (data: T) => void;
+};
 
-  if (!Module) return null;
+export default function InlineEditor({ save }: InlineEditorProps<PageModule>) {
+  const { schema, data, onChange } = useSelected<PageModule>();
+
+  if (!schema || !data) return null;
 
   return (
-    <div>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-      <div>
-        <ObjectEditor data={data} schema={Module.schema} onChange={onChange} />
-      </div>
-    </div>
+    <>
+      <PageModuleEditor data={data} onChange={onChange} />
+      <button onClick={stop(() => save(data))}>Save</button>
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import { ModuleProps, PageModule } from "slask-cms";
+import { useEditor } from "../components/Editor";
 import { Schema } from "../editors/editor-types";
 import { NotFound } from "./NotFound";
 import { pageModuleSchema } from "./schemas";
@@ -19,8 +20,16 @@ const getModule = (type?: string): ModuleElement => {
 export default function Resolver(data: PageModule) {
   const { type, props, settings } = data;
   const Module = getModule(type); // ((modules as any)[type] as ModuleElement) ?? NotFound;
+  const connect = useEditor(data, getModuleSchema(type));
   return (
-    <Module settings={settings} modules={data.modules} {...props} type={type} />
+    <div ref={connect}>
+      <Module
+        settings={settings}
+        modules={data.modules}
+        {...props}
+        type={type}
+      />
+    </div>
   );
 }
 

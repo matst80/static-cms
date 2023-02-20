@@ -13,5 +13,14 @@ export default function PageModuleEditor({
   const { type } = data;
   const schema = getModuleSchema(type);
 
-  return <ObjectEditor onChange={onChange} data={data} schema={schema} />;
+  return (
+    <div>
+      <ObjectEditor
+        onChange={onChange}
+        ignoredFields={["id", "modules"]}
+        data={data}
+        schema={schema}
+      />
+    </div>
+  );
 }

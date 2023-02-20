@@ -1,4 +1,5 @@
 import { ModuleProps } from "slask-cms";
+import { ColorEditor } from "../editors/StringEditor";
 import Resolver from "./Resolver";
 import { makeModuleSchema } from "./schemas";
 
@@ -8,15 +9,16 @@ type Props = {
 
 type Settings = {
   padding: number;
+  backgroundColor: string;
 };
 
 export default function TestModule({
   text = "",
   modules,
-  settings: { padding = 10 },
+  settings: { padding = 10, backgroundColor },
 }: ModuleProps<Props, Settings>) {
   return (
-    <div style={{ padding: `${padding}px` }}>
+    <div style={{ padding: `${padding}px`, backgroundColor }}>
       <p>{text}</p>
       {modules?.map((module) => (
         <Resolver key={module.id} {...module} />
@@ -31,5 +33,6 @@ TestModule.schema = makeModuleSchema<Props, Settings>(
   },
   {
     padding: { type: "string", title: "Padding" },
+    backgroundColor: { type: ColorEditor, title: "Background color" },
   }
 );

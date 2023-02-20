@@ -23,7 +23,7 @@ function App() {
   return (
     <div className="h-screen">
       <div className="flex h-full">
-        <aside className="w-72 h-sceen border-r border-gray-400 p-3 mr-3">
+        <aside className="w-72 h-sceen border-r border-gray-400 p-6">
           <ul className="space-y-2 flex-col">
             {urls?.map(({ url, title }) => (
               <li key={url}>
@@ -43,7 +43,7 @@ function App() {
           </form>
         </aside>
 
-        <div className="h-full overflow-y-auto flex-grow">
+        <div className="h-full flex-grow">
           <Outlet />
         </div>
       </div>

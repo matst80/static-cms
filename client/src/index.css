@@ -11,11 +11,22 @@
 		@apply p-4 rounded-lg shadow-lg bg-pink-500;
 	}
 
+	.field {
+		margin-bottom: 2rem;
+	}
+
 	.field label>span {
 		display: block;
 	}
 
 	.field input {
+		padding: 4px;
+	}
+
+	.field input[type="text"] {
+		padding: 0.6rem;
 		border-bottom: solid 1px #ccc;
+		background-color: transparent;
+		width: 100%;
 	}
 }

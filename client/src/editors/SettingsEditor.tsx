@@ -28,24 +28,26 @@ export default function SettingsEditor<T extends Settings>({
   const changeHandler = changeHandlerFactory(data, onChange);
   return (
     <div>
-      <div>
-        <DatePicker
-          data={validFrom}
-          max={validTo}
-          onChange={changeHandler("validFrom")}
-        />
-        <DatePicker
-          data={validTo}
-          min={validFrom}
-          onChange={changeHandler("validTo")}
-        />
-      </div>
       <ObjectEditor
         data={data}
         schema={schema}
         ignoredFields={["validFrom", "validTo"]}
         onChange={onChange}
       />
+      <div className="bg-slate-300 rounded-md p-2 grid grid-cols-2">
+        <label>From</label>
+        <DatePicker
+          data={validFrom}
+          max={validTo}
+          onChange={changeHandler("validFrom")}
+        />
+        <label>To</label>
+        <DatePicker
+          data={validTo}
+          min={validFrom}
+          onChange={changeHandler("validTo")}
+        />
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { PageModule } from "slask-cms";
 import { stop } from "../utils";
-import { FieldEditorSchemaProps, FieldProps } from "./editor-types";
+import { FieldProps } from "./editor-types";
 import PageModuleEditor from "./PageModuleEditor";
 
 type PageModulesProps = FieldProps<PageModule[]>;
@@ -32,13 +32,13 @@ export function PageModulesEditor({ data = [], onChange }: PageModulesProps) {
     ]);
   });
   return (
-    <div>
+    <div className="mt-4">
       <span>
         Modules: ({data?.length ?? 0}){" "}
         <button onClick={stop(() => setOpen(!open))}>Toggle</button>
       </span>
       {open && (
-        <div className="pl-4">
+        <div className="border-t mt-4 pt-4">
           {data.map((module, idx) => (
             <div key={module.id} className="relative">
               <button
