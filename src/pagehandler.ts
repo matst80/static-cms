@@ -1,5 +1,5 @@
-import { unlink } from "fs/promises";
-import { getVariants } from "./file-utils";
+import { readdir, unlink } from "fs/promises";
+import { getPagesInDirectory, getVariants } from "./file-utils";
 import { pageFactory } from "./page";
 import { StorageProvider } from "./types/db-provider";
 import { SectionHandler } from "./types/server";
@@ -17,7 +17,7 @@ export const pageHandlerFactory = (db: StorageProvider):SectionHandler => {
       case "GET": {
         console.log(path);
         if (path.endsWith('_urls')) {
-          return {path};
+          return getPagesInDirectory(path);
         }
         return {slask:1}
       }
