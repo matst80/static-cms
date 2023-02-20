@@ -24,8 +24,7 @@ export default function SettingsEditor<T extends Settings>({
   schema,
   onChange,
 }: SettingsProps<T>) {
-  if (!data) return null;
-  const { validFrom, validTo } = data;
+  const { validFrom, validTo } = data ?? {};
   const changeHandler = changeHandlerFactory(data, onChange);
   return (
     <div>

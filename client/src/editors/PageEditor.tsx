@@ -23,6 +23,7 @@ const pageSchema: Schema<Page> = {
   modules: {
     type: PageModulesEditor,
     hideTitle: true,
+    defaultValue: [],
     title: "Page modules",
   },
 };

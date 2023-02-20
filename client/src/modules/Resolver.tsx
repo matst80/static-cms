@@ -1,29 +1,31 @@
-import { ModuleProps, PageModule, Settings } from "slask-cms";
+import { ModuleProps, PageModule } from "slask-cms";
 import { Schema } from "../editors/editor-types";
 import { NotFound } from "./NotFound";
 import { pageModuleSchema } from "./schemas";
 import TestModule from "./TestModule";
 import TextModule from "./TextModule";
 
-export const modules = { NotFound, TestModule, TextModule };
+const modules = { NotFound, TestModule, TextModule };
 
-type ModuleElement = (
+export type ModuleElement = ((
   props: ModuleProps<Record<string, unknown>>
-) => JSX.Element;
+) => JSX.Element) & { schema?: Schema<PageModule> };
 
-export default function Resolver({ type, props, ...module }: PageModule) {
-  const Module = (modules as any)[type] as ModuleElement;
-  return Module ? (
-    <Module
-      settings={module.settings ?? {}}
-      modules={module.modules}
-      {...props}
-    />
-  ) : (
-    <NotFound type={type} />
+const getModule = (type?: string): ModuleElement => {
+  if (!type) return NotFound;
+  return (modules as any)[type] ?? NotFound;
+};
+
+export default function Resolver(data: PageModule) {
+  const { type, props, settings } = data;
+  const Module = getModule(type); // ((modules as any)[type] as ModuleElement) ?? NotFound;
+  return (
+    <Module settings={settings} modules={data.modules} {...props} type={type} />
   );
 }
 
+export const getModules = () => Object.keys(modules);
+
 export const getModuleSchema = (type: string): Schema<PageModule> => {
-  return ((modules as any)[type] ?? NotFound).schema ?? pageModuleSchema;
+  return getModule(type).schema ?? pageModuleSchema;
 };

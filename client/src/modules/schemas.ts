@@ -17,22 +17,27 @@ export const pageModuleSchema: Schema<PageModule> = {
   },
   props: {
     title: "Properties",
+		defaultValue:{},
     schema: {},
   },
   modules: {
     title: "Modules",
+		defaultValue:[],
     type: PageModulesEditor,
   },
 	links:{
 		title:'Links',
+		defaultValue:[],
 		type:LinksEditor
 	},
 	images:{
 		title:'Images',
+		defaultValue:[],
 		type:ImagesEditor
 	},
   settings: {
     type: SettingsEditor,
+		defaultValue:{},
     schema: settingsSchema,
     title: "Settings",
   },

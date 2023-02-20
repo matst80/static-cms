@@ -12,9 +12,6 @@ export default function PageModuleEditor({
   }
   const { type } = data;
   const schema = getModuleSchema(type);
-  return (
-    <div>
-      <ObjectEditor onChange={onChange} data={data} schema={schema} />
-    </div>
-  );
+
+  return <ObjectEditor onChange={onChange} data={data} schema={schema} />;
 }

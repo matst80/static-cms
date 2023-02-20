@@ -13,9 +13,12 @@ type ObjectEditorProps<T extends Record<string, unknown>> =
     ignoredFields?: (keyof T)[];
   };
 
-function getEditor<T>(field: SchemaEditor | SchemaField<NonNullable<T>>) {
+function getEditor<T>(
+  field: SchemaEditor<NonNullable<T>> | SchemaField<NonNullable<T>>
+) {
   const { schema } = field;
   const { type } = field as any;
+
   if (!type && schema) {
     return ObjectEditor;
   }
@@ -31,41 +34,32 @@ export default function ObjectEditor<T extends Record<string, unknown>>({
   ignoredFields,
   onChange,
 }: ObjectEditorProps<T>) {
-  if (!data) return null;
-  const changeHandler = changeHandlerFactory(data, onChange);
+  const changeHandler = changeHandlerFactory(data ?? ({} as T), onChange);
   return (
     <>
       {Object.entries(schema)
         .filter(([key]) => !ignoredFields?.includes(key))
-        .map(([key, field]: [keyof T, Schema<T>[any]]) => {
-          const { title, schema, hideTitle } = field;
-          const Editor = getEditor(field);
-          if (!Editor) return null;
-          return (
-            <div className="field" key={key as string}>
-              {hideTitle ? (
-                <Editor
-                  data={data[key] as any}
-                  parent={data}
-                  schema={schema}
-                  onChange={changeHandler(key) as any}
-                  label={title}
-                />
-              ) : (
+        .map(
+          ([key, field]: [keyof T, SchemaEditor<any> | SchemaField<any>]) => {
+            const { title, schema, hideTitle, defaultValue } = field;
+            const Editor = getEditor(field);
+            if (!Editor) return null;
+            return (
+              <div className="field" key={key as string}>
                 <label>
-                  <span>{title}</span>
+                  {hideTitle ? null : <span>{title}</span>}
                   <Editor
-                    data={data[key] as any}
+                    data={data?.[key] ?? defaultValue}
                     parent={data}
                     schema={schema}
-                    onChange={changeHandler(key) as any}
+                    onChange={changeHandler(key)}
                     label={title}
                   />
                 </label>
-              )}
-            </div>
-          );
-        })}
+              </div>
+            );
+          }
+        )}
     </>
   );
 }

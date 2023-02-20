@@ -16,17 +16,18 @@ export type FieldEditorSchemaProps<
   onChange: (data: T|undefined) => void;
 };
 
-export type SchemaBase = {
+export type SchemaBase<T> = {
   title: string;
+	defaultValue?:T
   hideTitle?: boolean;
 };
 
-export type SchemaField<T> = SchemaBase & {
+export type SchemaField<T> = SchemaBase<T> & {
   type: string | FieldEditor<T>;
 	schema?: Schema<Record<string,unknown>>
 };
 
-export type SchemaEditor = SchemaBase & {
+export type SchemaEditor<T> = SchemaBase<T> & {
   schema: Schema<Record<string,unknown>>;
 };
 
@@ -37,5 +38,5 @@ export type FieldProps<T> = T extends Record<string,unknown>
 export type FieldEditor<T,TProps=Record<string,never>> = (props: FieldProps<T> & TProps) => JSX.Element|null;
 
 export type Schema<T> = {
-  [key in keyof T]: SchemaEditor | SchemaField<NonNullable<T[key]>>;
+  [key in keyof T]: SchemaEditor<NonNullable<T[key]>> | SchemaField<NonNullable<T[key]>>;
 };

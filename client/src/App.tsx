@@ -21,37 +21,33 @@ function App() {
   const urls = useLoaderData() as { url: string; title?: string }[];
 
   return (
-    <>
-      <aside>
-        <div>
-          <ul className="space-y-2">
+    <div className="h-screen">
+      <div className="flex h-full">
+        <aside className="w-72 h-sceen border-r border-gray-400 p-3 mr-3">
+          <ul className="space-y-2 flex-col">
             {urls?.map(({ url, title }) => (
-              <Link className="lnk" key={url} to={`/page${url}`}>
-                {title?.length ? title : url}
-              </Link>
+              <li key={url}>
+                <Link to={`/page${url}`}>{title?.length ? title : url}</Link>
+              </li>
             ))}
           </ul>
+          <form onSubmit={createNewPage}>
+            <input
+              value={urlToCreate}
+              onChange={(e) => setUrlToCreate(e.target.value)}
+              placeholder="Create"
+            />
+            <div>
+              <a href="/auth/">Login</a>
+            </div>
+          </form>
+        </aside>
+
+        <div className="h-full overflow-y-auto flex-grow">
+          <Outlet />
         </div>
-      </aside>
-      {/* <form onSubmit={createNewPage}>
-        {slug?.map(({ url, title }) => (
-          <Link key={url} to={`/page/${url}`}>
-            {title?.length ? title : url}
-          </Link>
-        ))}
-        <input
-          value={urlToCreate}
-          onChange={(e) => setUrlToCreate(e.target.value)}
-          placeholder="Create"
-        />
-        <div>
-          <a href="/auth/">Login</a>
-        </div>
-      </form> */}
-      <div className="p-4 sm:ml-64">
-        <Outlet />
       </div>
-    </>
+    </div>
   );
 }
 

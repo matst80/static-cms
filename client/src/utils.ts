@@ -2,15 +2,12 @@ import { SyntheticEvent } from "react"
 
 export const changeHandlerFactory =
   <T,R>(
-    data: T | undefined,
+    data: T,
     afterChange: (data: T) => void
   ) =>
-  (field: keyof T) =>
+  (field: keyof NonNullable<T>) =>
   (value: R) => {
-    if (!data) return;
-    const v =
-      (value as React.ChangeEvent<HTMLInputElement>).target?.value as R ?? value;
-    afterChange({ ...data, [field]: v });
+    afterChange({ ...data, [field]: value });
   };
 
 export function stop<T extends SyntheticEvent<any>>(fn: (d: T) => void) {
