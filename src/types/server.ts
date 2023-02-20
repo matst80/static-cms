@@ -1,4 +1,8 @@
+import { JsonRequest, JsonResponse } from "../server-utils"
+
 export type SectionHandler = (options: {
+  req:JsonRequest,
+  res:JsonResponse,
   method: string;
   path: string;
   body: ()=>null|Promise<any>;

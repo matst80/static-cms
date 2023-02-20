@@ -10,7 +10,7 @@ export const changeHandlerFactory =
     afterChange({ ...data, [field]: value });
   };
 
-export function stop<T extends SyntheticEvent<any>>(fn: (d: T) => void) {
+export function stop<T extends SyntheticEvent>(fn: (d: T) => void) {
   return (e: T) => {
     e.preventDefault();
     e.stopPropagation();

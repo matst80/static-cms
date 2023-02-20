@@ -4,11 +4,11 @@
 
 @layer base {
 	.btn {
-		@apply p-4 rounded-lg shadow-lg bg-pink-500;
+		@apply py-2 px-4 mr-2 rounded-lg shadow-lg bg-pink-500;
 	}
 
 	.lnk {
-		@apply p-4 rounded-lg shadow-lg bg-pink-500;
+		@apply py-2 px-4 mr-2 rounded-lg shadow-lg bg-pink-500;
 	}
 
 	.field {
