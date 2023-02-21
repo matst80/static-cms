@@ -8,19 +8,19 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "^/page/.*": {
+      "^/page.*": {
         target: "https://cms.tornberg.me",
         changeOrigin: true,
       },
-      "^/api/.*": {
+      "^/api.*": {
         target: "https://cms.tornberg.me",
         changeOrigin: true,
       },
-      "^/settings/.*": {
+      "^/settings.*": {
         target: "https://cms.tornberg.me",
         changeOrigin: true,
       },
-      "^/assets/.*": {
+      "^/assets.*": {
         target: "https://cms.tornberg.me",
         changeOrigin: true,
       },

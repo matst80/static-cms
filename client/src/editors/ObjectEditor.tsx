@@ -10,6 +10,7 @@ import { StringEditor } from "./StringEditor";
 
 type ObjectEditorProps<T extends Record<string, unknown>> =
   FieldEditorSchemaProps<T> & {
+    schema: Schema<T>;
     ignoredFields?: (keyof T)[];
   };
 

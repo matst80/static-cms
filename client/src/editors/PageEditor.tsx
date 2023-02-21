@@ -3,7 +3,7 @@ import { Form, useLoaderData } from "react-router-dom";
 import { Page } from "slask-cms";
 import { useCms } from "../useCms";
 import { stop } from "../utils";
-import { Schema } from "./editor-types";
+import { FieldEditor, Schema } from "./editor-types";
 import ObjectEditor from "./ObjectEditor";
 import { PageModulesEditor } from "./PageModulesEditor";
 
@@ -28,6 +28,21 @@ const pageSchema: Schema<Page> = {
   },
 };
 
+export const PageObjectEditor: FieldEditor<Page> = ({ data, onChange }) => {
+  if (!data) return null;
+  return (
+    <div>
+      <span>
+        Created:{" "}
+        {data.created ? new Date(data.created).toLocaleString() : "Not saved"},
+        Modified:{" "}
+        {data.modified ? new Date(data.modified).toLocaleString() : "Not saved"}
+      </span>
+      <ObjectEditor onChange={onChange} data={data} schema={pageSchema} />
+    </div>
+  );
+};
+
 export default function PageEditor() {
   const loadedPage = useLoaderData() as Page;
   const [page, setPage] = useState<Page | undefined>(loadedPage);
@@ -37,8 +52,8 @@ export default function PageEditor() {
   }, [loadedPage]);
 
   const handleSubmit = stop((e) => {
-    console.log(e);
-    if (page?.url) {
+    console.log(e, page?.url);
+    if (page?.url != null) {
       savePage(page.url, page);
     }
   });
@@ -47,17 +62,7 @@ export default function PageEditor() {
     <div className="w-full p-6">
       {page ? (
         <Form method="post" id="page-form" onSubmit={handleSubmit}>
-          <span>
-            Created:{" "}
-            {page.created
-              ? new Date(page.created).toLocaleString()
-              : "Not saved"}
-            , Modified:{" "}
-            {page.modified
-              ? new Date(page.modified).toLocaleString()
-              : "Not saved"}
-          </span>
-          <ObjectEditor onChange={setPage} data={page} schema={pageSchema} />
+          <PageObjectEditor data={page} onChange={setPage} />
           <div className="toolbox">
             <button className="btn" type="submit">
               Save

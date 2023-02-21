@@ -2,13 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+	font-family: Roboto, -apple-system, Helvetica Neue, Helvetica, Arial, sans-serif;
+	-ms-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-smoothing: antialiased;
+	font-size: 14px;
+}
+
 @layer base {
 	.btn {
-		@apply py-2 px-4 mr-2 rounded-lg shadow-lg bg-pink-500;
+		@apply py-2 px-4 mr-2 rounded-lg shadow-lg bg-white border border-gray-300;
 	}
 
 	.lnk {
-		@apply py-2 px-4 mr-2 rounded-lg shadow-lg bg-pink-500;
+		@apply py-2 px-4 mr-2 rounded-lg shadow-lg bg-white border border-gray-300;
+	}
+
+	.pill {
+		@apply py-1 px-2 ml-1 rounded-md bg-gray-600 text-white text-xs;
 	}
 
 	.field {

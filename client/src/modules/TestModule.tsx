@@ -15,8 +15,9 @@ type Settings = {
 export default function TestModule({
   text = "",
   modules,
-  settings: { padding = 10, backgroundColor },
+  settings,
 }: ModuleProps<Props, Settings>) {
+  const { padding = 10, backgroundColor } = settings ?? {};
   return (
     <div style={{ padding: `${padding}px`, backgroundColor }}>
       <p>{text}</p>

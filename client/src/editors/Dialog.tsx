@@ -1,7 +1,9 @@
 import { PropsWithChildren } from "react";
 import { stop } from "../utils";
+import { FieldEditorSchemaProps } from "./editor-types";
 
-export const Dialog = ({ open, children, onClose }: DialogProps) => {
+export const Dialog = ({ open, children, onClose, buttons }: DialogProps) => {
+  const btns = Object.entries(buttons ?? { Close: onClose });
   return open ? (
     <div
       onClick={onClose}
@@ -12,14 +14,25 @@ export const Dialog = ({ open, children, onClose }: DialogProps) => {
         className="relative m-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white font-sans antialiased shadow-2xl"
       >
         <div className="p-6">{children}</div>
-        <div className="flex shrink-0 flex-wrap items-center justify-end p-4">
-          <button onClick={stop(onClose)}>Close</button>
+        <div className="buttongroup flex shrink-0 flex-wrap items-center justify-end p-4">
+          {btns.map(([title, fn]) => {
+            return (
+              <button key={title} className="btn" onClick={stop(() => fn())}>
+                {title}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
   ) : null;
 };
-type DialogProps = {
+export type DialogButtons<T> = {
+  [key: string]: (data: T) => boolean;
+};
+
+export type DialogProps = {
   open: boolean;
+  buttons?: DialogButtons<void>;
   onClose: () => void;
 } & PropsWithChildren;

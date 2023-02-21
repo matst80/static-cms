@@ -21,7 +21,9 @@ export default function LinksEditor({
           );
         })}
 
-        <button onClick={stop(() => setShowBrowser(true))}>Open browser</button>
+        <button className="btn" onClick={stop(() => setShowBrowser(true))}>
+          Open browser
+        </button>
       </div>
       <Dialog open={showBrowser} onClose={() => setShowBrowser(false)}>
         <span>här kommer det filer</span>

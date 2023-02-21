@@ -7,7 +7,7 @@ export type ParentFetch = (
 ) => Promise<Response>;
 
 export const fixCmsUrl = (url: string) => {
-  if (!url || url === "/" || url === "") return "";
+  if (!url || url === "/") return "";
   return url.startsWith("/") ? url.substring(1) : url;
 };
 

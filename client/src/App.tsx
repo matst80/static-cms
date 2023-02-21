@@ -1,24 +1,39 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, Outlet, useLoaderData } from "react-router-dom";
+import { Page } from "slask-cms";
+import { PageObjectEditor } from "./editors/PageEditor";
 import { useCms, useSearchPage } from "./useCms";
+import { useEditorDialog } from "./editors/EditorDialog";
+
+function CreatePageButton() {
+  const { savePage } = useCms();
+  const { dialog, setOpen } = useEditorDialog<Page>(
+    {
+      modules: [],
+      url: "",
+    },
+    {
+      "Create page": (page) => {
+        console.log(page);
+        savePage(page.url, page);
+        return true;
+      },
+    },
+    PageObjectEditor
+  );
+  return (
+    <>
+      {dialog}
+      <button className="btn" onClick={() => setOpen(true)}>
+        Create page
+      </button>
+    </>
+  );
+}
 
 function App() {
   const [term, setTerm] = useState<string | undefined>(undefined);
-  const { savePage } = useCms();
-  const [urlToCreate, setUrlToCreate] = useState("");
-  const createNewPage: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (urlToCreate && urlToCreate.length) {
-      savePage(urlToCreate, {
-        modules: [
-          {
-            type: "hero",
-          },
-        ],
-      }).then(() => setUrlToCreate(""));
-    }
-  };
+
   const urls = useLoaderData() as { url: string; title?: string }[];
   const { data } = useSearchPage(term);
   return (
@@ -29,32 +44,26 @@ function App() {
             <ul className="space-y-2 flex-col">
               {urls?.map(({ url, title }) => (
                 <li key={url}>
-                  <Link to={`/page${url}`}>{title?.length ? title : url}</Link>
+                  <Link to={`/page${url}`}>
+                    {title?.length ? title : url}{" "}
+                    <span className="pill">{url}</span>
+                  </Link>
                 </li>
               ))}
             </ul>
-            <form onSubmit={createNewPage}>
-              <input
-                value={urlToCreate}
-                onChange={(e) => setUrlToCreate(e.target.value)}
-                placeholder="Create"
-              />
-              <div>
-                <a href="/auth/">Login</a>
-              </div>
-            </form>
+            <CreatePageButton />
             <div className="pt-4">
               <input
                 value={term ?? ""}
+                placeholder="Search for page"
                 onChange={(e) => setTerm(e.target.value)}
               />
               <ul>
-                {data?.hits.hits.map((item) => {
+                {data?.hits.hits.map(({ _id, _source }) => {
                   return (
-                    <li key={item._id}>
-                      <pre>
-                        {item._source.seoTitle} ({item._source.url})
-                      </pre>
+                    <li key={_id}>
+                      {_source.seoTitle}{" "}
+                      <span className="pill">{_source.url}</span>
                     </li>
                   );
                 })}

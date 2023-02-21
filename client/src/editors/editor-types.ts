@@ -11,7 +11,7 @@ export type FieldEditorSchemaProps<
 > = {
   data: T | undefined;
   parent?: TParent;
-  schema: Schema<T>;
+  schema?: Schema<T>;
   label?: string;
   onChange: (data: T | undefined) => void;
 };

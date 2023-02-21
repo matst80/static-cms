@@ -12,6 +12,9 @@ const appendModuleId =
     if (!module.id) {
       module.id = idGenerator();
     }
+    if (!module.settings) {
+      module.settings = {};
+    }
     return fn(module);
   };
 
@@ -22,7 +25,7 @@ const saveModulesFactory = (db: StorageProvider) => {
         appendModuleId(db.getId, (module) => [
           db.saveModule(module),
           // compressStaticFile(getStoragePathFromModule(module), module),
-           ...(module.modules ? saveModules(module.modules) : []),
+          ...(module.modules ? saveModules(module.modules) : []),
         ])
       )
       .flat();
@@ -30,16 +33,17 @@ const saveModulesFactory = (db: StorageProvider) => {
   return saveModules;
 };
 
-const prepairPage = <T extends PageUpdate>(fn: (page: T) => Promise<T>) => (page: T) => {
-  const now = Date.now();
-  return fn({ ...page, created: page.created ?? now, modified: now });
-};
+const prepairPage =
+  <T extends PageUpdate>(fn: (page: T) => Promise<T>) =>
+  (page: T) => {
+    const now = Date.now();
+    return fn({ ...page, created: page.created ?? now, modified: now });
+  };
 
 type PageUpdate = { url: string } & Partial<Page>;
 
 export const pageFactory = (db: StorageProvider) => {
-  
-  const savePage = (page: Page):Promise<Page> =>
+  const savePage = (page: Page): Promise<Page> =>
     Promise.all([
       ...(page.modules ? saveModules(page.modules) : []),
       db.savePage(page),
@@ -50,13 +54,14 @@ export const pageFactory = (db: StorageProvider) => {
           return page;
         })
       ),
-    ]).then((result)=>result.pop() as Page);
+    ]).then((result) => result.pop() as Page);
 
   const saveModules = saveModulesFactory(db);
-  const updatePage = ({ url, ...page }: PageUpdate) => getStoragePathFromUrl(url, "page")
-      .then(path=>db.getPage(path))
+  const updatePage = ({ url, ...page }: PageUpdate) =>
+    getStoragePathFromUrl(url, "page")
+      .then((path) => db.getPage(path))
       .then((original) => savePage({ ...original!, ...page, url }));
-  
+
   const storePages = (...pages: Page[]) =>
     Promise.all(pages.map(prepairPage(savePage)));
   return { storePages, updatePage };

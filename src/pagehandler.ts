@@ -1,9 +1,18 @@
 import { readdir, unlink } from "fs/promises";
+import { Page } from "slask-cms";
 import { getPagesInDirectory, getVariants } from "./file-utils";
 import { pageFactory } from "./page";
 import { StorageProvider } from "./types/db-provider";
 import { SearchProvider } from "./types/search-provider";
 import { SectionHandler } from "./types/server";
+
+const sanitizePage = (page: Partial<Page>, url: string): Page => {
+  return {
+    ...page,
+    url,
+    modules: page.modules ?? [],
+  } as Page;
+};
 
 export const pageHandlerFactory = (
   db: StorageProvider,
@@ -30,17 +39,17 @@ export const pageHandlerFactory = (
         return;
       }
       case "POST": {
-        const page = await body();
+        const page = sanitizePage(await body(), path);
         await search.indexPage(page);
-        return await storePages({ ...page, url: path });
+        return await storePages(page);
       }
       case "PUT": {
-        const data = await body();
+        const page = sanitizePage(await body(), path);
 
         const { exists } = await fileStatus;
         if (exists) {
-          await search.indexPage(data);
-          return await updatePage({ ...data, url: path });
+          await search.indexPage(page);
+          return await updatePage(page);
         }
         return { notFound: path };
       }

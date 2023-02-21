@@ -53,7 +53,9 @@ function FileUploadMultiple() {
         ))}
       </ul>
 
-      <button onClick={handleUploadClick}>Upload</button>
+      <button className="btn" onClick={handleUploadClick}>
+        Upload
+      </button>
     </div>
   );
 }
