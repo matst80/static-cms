@@ -5,16 +5,17 @@ import { PageObjectEditor } from "./editors/PageEditor";
 import { useCms, useSearchPage } from "./useCms";
 import { useEditorDialog } from "./editors/EditorDialog";
 
+const defaultPageSettings = {
+  modules: [],
+  url: "",
+};
+
 function CreatePageButton() {
   const { savePage } = useCms();
   const { dialog, setOpen } = useEditorDialog<Page>(
-    {
-      modules: [],
-      url: "",
-    },
+    defaultPageSettings,
     {
       "Create page": (page) => {
-        console.log(page);
         savePage(page.url, page);
         return true;
       },

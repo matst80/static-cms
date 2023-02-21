@@ -32,8 +32,40 @@ export type CmsApi = {
   searchModule(term: string): Promise<SearchResults>;
 };
 
+type SearchTypes =
+  | "fuzzy"
+  | "matchphrase"
+  | "term"
+  | "matchall"
+  | "match"
+  | "prefix"
+  | "wildcard"
+  | "querystring";
+
+type SearchOptions = {
+  search_type: SearchTypes;
+  max_results: number;
+  from: number;
+  _source: string[];
+};
+const defaultSearchOptions: SearchOptions = {
+  max_results: 20,
+  search_type: "wildcard",
+  from: 0,
+  _source: [],
+};
+
 export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
-  const search = (section: string, term: string) => {
+  const search = (
+    section: string,
+    term: string,
+    {
+      search_type,
+      max_results,
+      from,
+      _source,
+    }: SearchOptions = defaultSearchOptions
+  ) => {
     return fetch(`${baseUrl}/api/${section}/_search`, {
       method: "POST",
       headers: {
@@ -41,12 +73,14 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
         accept: "application/json",
       },
       body: JSON.stringify({
-        search_type: "matchphrase",
-        max_results: 20,
+        search_type,
+        max_results,
+        from,
         sort_fields: ["-@timestamp"],
         query: {
           term,
         },
+        _source,
       }),
     }).then((d) => asJson<SearchResults>(d));
   };
