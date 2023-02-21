@@ -46,8 +46,8 @@ function FileUploadMultiple() {
       <input type="file" onChange={handleFileChange} multiple />
 
       <ul>
-        {files.map((file, i) => (
-          <li key={i}>
+        {files.map((file) => (
+          <li key={file.name}>
             {file.name} - {file.type}
           </li>
         ))}
@@ -65,7 +65,7 @@ function FileList({ path, onSelect }: FileListProps) {
       {data?.map((file) => {
         const { name, size } = file;
         return (
-          <div className="flex-col" onClick={() => onSelect(file)}>
+          <div key={name} className="flex-col" onClick={() => onSelect(file)}>
             {name}
             <span>{size}</span>
           </div>
@@ -98,15 +98,16 @@ export default function ImagesEditor({
       <Dialog open={showBrowser} onClose={() => setShowBrowser(false)}>
         <FileList
           path="images"
-          onSelect={(file) =>
+          onSelect={(file) => {
+            const src = `/assets/image/${file.name}`;
             onChange([
-              ...(data ?? []),
+              ...(data?.filter((s) => s.src !== src) ?? []),
               {
-                src: `/assets/image/${file.name}`,
+                src,
                 title: file.name,
               },
-            ])
-          }
+            ]);
+          }}
         />
         <div>
           Upload:
