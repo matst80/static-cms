@@ -1,7 +1,11 @@
 import { Settings } from "slask-cms";
 import DatePicker from "../components/DatePicker";
 import { changeHandlerFactory } from "../utils";
-import { FieldEditorProps, Schema } from "./editor-types";
+import {
+  FieldEditorProps,
+  FieldEditorSchemaProps,
+  Schema,
+} from "./editor-types";
 import ObjectEditor from "./ObjectEditor";
 
 export const settingsSchema: Schema<Settings> = {
@@ -15,9 +19,7 @@ export const settingsSchema: Schema<Settings> = {
   },
 };
 
-type SettingsProps<T extends Settings> = Omit<FieldEditorProps<T>, "schema"> & {
-  schema: Schema<T>;
-};
+type SettingsProps<T extends Settings> = FieldEditorSchemaProps<T>;
 
 export default function SettingsEditor<T extends Settings>({
   data,
@@ -28,12 +30,14 @@ export default function SettingsEditor<T extends Settings>({
   const changeHandler = changeHandlerFactory(data, onChange);
   return (
     <div>
-      <ObjectEditor
-        data={data}
-        schema={schema}
-        ignoredFields={["validFrom", "validTo"]}
-        onChange={onChange}
-      />
+      <div className="grid grid-cols-2">
+        <ObjectEditor
+          data={data}
+          schema={schema ?? (settingsSchema as Schema<T>)}
+          ignoredFields={["validFrom", "validTo"]}
+          onChange={onChange}
+        />
+      </div>
       <div className="bg-slate-300 rounded-md p-2 grid grid-cols-2">
         <label>From</label>
         <DatePicker

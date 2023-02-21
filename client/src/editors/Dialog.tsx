@@ -3,7 +3,7 @@ import { stop } from "../utils";
 import { FieldEditorSchemaProps } from "./editor-types";
 
 export const Dialog = ({ open, children, onClose, buttons }: DialogProps) => {
-  const btns = Object.entries(buttons ?? { Close: onClose });
+  const btns = Object.entries(buttons ?? { Close: () => true });
   return open ? (
     <div
       onClick={onClose}
@@ -17,7 +17,13 @@ export const Dialog = ({ open, children, onClose, buttons }: DialogProps) => {
         <div className="buttongroup flex shrink-0 flex-wrap items-center justify-end p-4">
           {btns.map(([title, fn]) => {
             return (
-              <button key={title} className="btn" onClick={stop(() => fn())}>
+              <button
+                key={title}
+                className="btn"
+                onClick={stop(() => {
+                  fn() && onClose();
+                })}
+              >
                 {title}
               </button>
             );
