@@ -41,6 +41,9 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
         accept: "application/json",
       },
       body: JSON.stringify({
+        search_type: "matchphrase",
+        max_results: 20,
+        sort_fields: ["-@timestamp"],
         query: {
           term,
         },

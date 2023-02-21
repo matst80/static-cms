@@ -43,18 +43,26 @@ function App() {
                 <a href="/auth/">Login</a>
               </div>
             </form>
+            <div className="pt-4">
+              <input
+                value={term ?? ""}
+                onChange={(e) => setTerm(e.target.value)}
+              />
+              <ul>
+                {data?.hits.hits.map((item) => {
+                  return (
+                    <li key={item._id}>
+                      <pre>
+                        {item._source.seoTitle} ({item._source.url})
+                      </pre>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
         </aside>
-        <input value={term ?? ""} onChange={(e) => setTerm(e.target.value)} />
-        <ul>
-          {data?.hits.hits.map((item) => {
-            return (
-              <li key={item._id}>
-                <pre>{JSON.stringify(item, null, 2)}</pre>
-              </li>
-            );
-          })}
-        </ul>
+
         <div className="h-full flex-grow">
           <Outlet />
         </div>
