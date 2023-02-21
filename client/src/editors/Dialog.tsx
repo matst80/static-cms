@@ -27,8 +27,22 @@ export const Dialog = ({ open, children, onClose, buttons }: DialogProps) => {
     </div>
   ) : null;
 };
+
+export const curryButtons = <I, R>(
+  buttons: DialogButtons<I>,
+  convert: (fn: ButtonFunction<I>) => ButtonFunction<R>
+): DialogButtons<R> => {
+  return Object.fromEntries(
+    Object.entries(buttons).map(([key, fn]) => {
+      return [key, convert(fn)];
+    })
+  );
+};
+
+export type ButtonFunction<T> = (data: T) => boolean;
+
 export type DialogButtons<T> = {
-  [key: string]: (data: T) => boolean;
+  [key: string]: ButtonFunction<T>;
 };
 
 export type DialogProps = {

@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Dialog, DialogProps, DialogButtons } from "./Dialog";
+import {
+  Dialog,
+  DialogProps,
+  DialogButtons,
+  ButtonFunction,
+  curryButtons,
+} from "./Dialog";
 
 type Editor<T extends Record<string, unknown>> = (props: {
   data: T;
@@ -36,11 +42,7 @@ export function useEditorDialog<T extends Record<string, unknown>>(
 ) {
   const [data, setData] = useState<T>(initialValue ?? ({} as T));
   const [open, setOpen] = useState<boolean>(false);
-  const convertedButtons = Object.fromEntries(
-    Object.entries(buttons).map(([key, fn]) => {
-      return [key, () => fn(data)];
-    })
-  );
+  const convertedButtons = curryButtons(buttons, (fn) => () => fn(data));
 
   const dialog = (
     <EditorDialog

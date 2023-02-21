@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Schema } from "./editor-types";
 import ObjectEditor from "./ObjectEditor";
-import { Dialog, DialogProps, DialogButtons } from "./Dialog";
+import { Dialog, DialogProps, DialogButtons, curryButtons } from "./Dialog";
 
 export function SchemaDialog<T extends Record<string, unknown>>({
   data,
@@ -38,10 +38,12 @@ export function useSchemaDialog<T extends Record<string, unknown>>(
 ) {
   const [data, setData] = useState<T>(initialValue);
   const [open, setOpen] = useState<boolean>(false);
+  const convertedButtons = curryButtons(buttons, (fn) => () => fn(data));
   const dialog = (
     <SchemaDialog
       open={open}
       data={data}
+      buttons={convertedButtons}
       onChange={(d) => {
         setData(d ?? initialValue);
       }}
