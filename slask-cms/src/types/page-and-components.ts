@@ -42,7 +42,7 @@ export type Image = {
 
 export type ModuleProps<
   TProps extends Record<string, unknown>,
-  TSettings extends Record<string, unknown> = Record<string, never>
+  TSettings extends Record<string, unknown> = Record<string, unknown>
 > = TProps & {
   settings: Settings & TSettings;
   links?: Link[];

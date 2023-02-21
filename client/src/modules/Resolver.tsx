@@ -17,7 +17,7 @@ const getModule = (type?: string): ModuleElement => {
   return (modules as any)[type] ?? NotFound;
 };
 
-export default function Resolver(data: PageModule) {
+export default function Resolver<T extends PageModule>(data: T) {
   const { type, props, settings } = data;
   const Module = getModule(type); // ((modules as any)[type] as ModuleElement) ?? NotFound;
   const connect = useEditor(data, getModuleSchema(type));
