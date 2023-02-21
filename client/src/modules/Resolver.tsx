@@ -13,14 +13,14 @@ export type ModuleElement<
   T extends Record<string, unknown> = Record<string, unknown>
 > = ((props: ModuleProps<T>) => JSX.Element) & { schema: Schema<PageModule> };
 
-const getModule = (type?: string): ModuleElement => {
+export const getModule = (type?: string): ModuleElement => {
   if (!type) return NotFound;
   return (modules as any)[type] ?? NotFound;
 };
 
 export default function Resolver<T extends PageModule>(data: T) {
   const { type, props, settings } = data;
-  const Module = getModule(type); // ((modules as any)[type] as ModuleElement) ?? NotFound;
+  const Module = getModule(type);
   const connect = useEditor(data, getModuleSchema(type));
   return (
     <div ref={connect}>

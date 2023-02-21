@@ -17,7 +17,7 @@ export default function PageModuleEditor({
     <div>
       <ObjectEditor
         onChange={onChange}
-        ignoredFields={["id", "modules"]}
+        ignoredFields={["id"]}
         data={data}
         schema={schema}
       />

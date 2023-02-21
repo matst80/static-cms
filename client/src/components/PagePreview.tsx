@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 import { Page, PageModule } from "slask-cms";
-import Resolver from "../modules/Resolver";
-import Editor from "./Editor";
+import Resolver, { getModule, getModuleSchema } from "../modules/Resolver";
+import Editor, { useEditor } from "./Editor";
 import InlineEditor from "./InlineEditor";
 
 const replaceModuleContent = (
@@ -20,6 +20,29 @@ const replaceModuleContent = (
     };
   });
 };
+
+function ConnectedModulePreview(data: PageModule) {
+  const { type, modules } = data;
+  const connect = useEditor(data, getModuleSchema(type));
+  return (
+    <li>
+      <span ref={connect}>{type}</span>
+      <ModuleOverview modules={modules} />
+    </li>
+  );
+}
+
+function ModuleOverview({ modules }: { modules?: PageModule[] }) {
+  if (!modules) return null;
+
+  return (
+    <ul className="pl-3">
+      {modules.map((module) => (
+        <ConnectedModulePreview key={module.id} {...module} />
+      ))}
+    </ul>
+  );
+}
 
 export default function PagePreview() {
   const loadedPage = useLoaderData() as Page;
@@ -44,6 +67,7 @@ export default function PagePreview() {
           <div className="w-96 border-l border-gray-400 h-full p-6 fixed right-0 top-0 bg-white overflow-y-auto">
             <InlineEditor save={updateModule} />
           </div>
+          <ModuleOverview modules={page.modules} />
         </Editor>
       ) : (
         <p>No modules</p>

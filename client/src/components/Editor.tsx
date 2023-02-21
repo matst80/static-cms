@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { PageModule } from "slask-cms";
-import { FieldEditorProps, Schema } from "../editors/editor-types";
+import { Schema } from "../editors/editor-types";
 
 type EditingContext<T> = {
   state: EditingState;
@@ -15,10 +15,12 @@ type EditingContext<T> = {
 };
 
 type EditingState = {
-  selected?: {
-    schema: Schema<HasId>;
-    data: HasId;
-  };
+  selected:
+    | {
+        schema: Schema<HasId>;
+        data: HasId;
+      }
+    | undefined;
 };
 
 export type HasId = {
@@ -59,13 +61,14 @@ export function useEditor<T extends HasId, TSchema extends HasId>(
 export function useSelected<T extends HasId>() {
   const ctx = useContext(EditorContext);
   const result = useMemo(() => {
+    const { data, schema } = ctx?.state.selected ?? {};
     const onChange = (data: T | undefined) => {
       ctx?.setState({
         ...ctx.state,
-        selected: { ...ctx.state.selected, data } as any,
+        selected: data && schema ? { data, schema } : undefined,
       });
     };
-    const { data, schema } = ctx?.state.selected ?? {};
+
     return {
       data: data as T,
       schema: schema as Schema<T>,
@@ -76,7 +79,7 @@ export function useSelected<T extends HasId>() {
 }
 
 export default function Editor({ children }: PropsWithChildren) {
-  const [state, setState] = useState<EditingState>({});
+  const [state, setState] = useState<EditingState>({ selected: undefined });
   const ctx = useMemo(() => {
     return { state, setState, onChange: console.log };
   }, [state, setState]);
