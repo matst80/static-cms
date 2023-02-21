@@ -1,16 +1,17 @@
 import { ModuleProps, PageModule } from "slask-cms";
 import { useEditor } from "../components/Editor";
 import { Schema } from "../editors/editor-types";
-import { NotFound } from "./NotFound";
 import { pageModuleSchema } from "./schemas";
+
+import NotFound from "./NotFound";
 import TestModule from "./TestModule";
 import TextModule from "./TextModule";
 
 const modules = { NotFound, TestModule, TextModule };
 
-export type ModuleElement = ((
-  props: ModuleProps<Record<string, unknown>>
-) => JSX.Element) & { schema?: Schema<PageModule> };
+export type ModuleElement<
+  T extends Record<string, unknown> = Record<string, unknown>
+> = ((props: ModuleProps<T>) => JSX.Element) & { schema: Schema<PageModule> };
 
 const getModule = (type?: string): ModuleElement => {
   if (!type) return NotFound;

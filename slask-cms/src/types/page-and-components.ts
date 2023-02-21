@@ -44,6 +44,7 @@ export type ModuleProps<
   TProps extends Record<string, unknown>,
   TSettings extends Record<string, unknown> = Record<string, unknown>
 > = TProps & {
+  type: string;
   settings: Settings & TSettings;
   links?: Link[];
   images?: Image[];
