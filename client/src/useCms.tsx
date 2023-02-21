@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "react-query";
 import { CmsApi, cmsApiFactory } from "slask-cms";
@@ -53,4 +47,9 @@ export const usePage = (url = "") => {
 export const useUrls = (url = "") => {
   const { getUrls } = useCms();
   return useQuery("cms-urls:" + url, () => getUrls(url));
+};
+
+export const useAssets = (url = "") => {
+  const { getAssets } = useCms();
+  return useQuery("cms-assets:" + url, () => getAssets(url));
 };

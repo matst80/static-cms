@@ -1,4 +1,4 @@
-import { Page } from "types/page-and-components";
+import { AssetFile, Page } from "types/page-and-components";
 
 export type ParentFetch = (
   input: RequestInfo | URL,
@@ -26,6 +26,7 @@ export type CmsApi = {
   savePage(url: string, page: Page): Promise<any>;
   deletePage(url: string): Promise<boolean>;
   updatePage(url: string, page: Partial<Page>): Promise<any>;
+  getAssets(url: string): Promise<AssetFile[]>;
 };
 
 export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
@@ -60,10 +61,13 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
       return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`, {
         method: "PUT",
         body: JSON.stringify(page),
-        headers:{
-          
-        }
+        headers: {},
       }).then((d) => asJson<Page>(d));
+    },
+    getAssets(url) {
+      return fetch(`${baseUrl}/assets/${fixCmsUrl(url)}`).then((d) =>
+        asJson<AssetFile[]>(d)
+      );
     },
   };
 };

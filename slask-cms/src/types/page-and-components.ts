@@ -9,6 +9,13 @@ export type Page = {
   modified?: number;
 };
 
+export type AssetFile = {
+  name: string;
+  type: string;
+  mtime: string;
+  size: number;
+};
+
 export type PageModuleWithProps<
   T extends Record<string, unknown>,
   TSettings extends Settings = Settings

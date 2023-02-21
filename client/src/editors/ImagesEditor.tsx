@@ -1,5 +1,9 @@
 import { ChangeEvent, useState } from "react";
+import { useQuery } from "react-query";
 import { Image } from "slask-cms";
+import { useAssets } from "../useCms";
+import { stop } from "../utils";
+import { Dialog } from "./Dialog";
 import { FieldEditorProps } from "./editor-types";
 
 const ImageBrowser = () => {
@@ -54,10 +58,26 @@ function FileUploadMultiple() {
   );
 }
 
+function FileList({ path }: FileListProps) {
+  const { data } = useAssets(path);
+  return (
+    <div className="grid grid-cols-5">
+      {data?.map((file) => {
+        return <div>{JSON.stringify(file)}</div>;
+      })}
+    </div>
+  );
+}
+
+type FileListProps = {
+  path: string;
+};
+
 export default function ImagesEditor({
   data,
   onChange,
 }: FieldEditorProps<Image[]>) {
+  const [showBrowser, setShowBrowser] = useState<boolean>(false);
   return (
     <div className="flex">
       {data?.map(({ src, title }) => {
@@ -68,10 +88,15 @@ export default function ImagesEditor({
           </div>
         );
       })}
-      <div>
-        Upload:
-        <FileUploadMultiple />
-      </div>
+      <Dialog open={showBrowser} onClose={() => setShowBrowser(false)}>
+        <FileList path="images" />
+        <div>
+          Upload:
+          <FileUploadMultiple />
+        </div>
+      </Dialog>
+
+      <button onClick={stop(() => setShowBrowser(true))}>Open browser</button>
     </div>
   );
 }
