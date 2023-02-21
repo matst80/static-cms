@@ -13,9 +13,16 @@ type CmsApiContext = CmsApi;
 
 const CmsContext = createContext<CmsApiContext | null>(null);
 
-type CmsProviderProps = { baseUrl?: string } & PropsWithChildren;
+type CmsProviderProps = {
+  baseUrl?: string;
+  showNotification?: (message: string | Error) => any;
+} & PropsWithChildren;
 
-export const CmsProvider = ({ children, baseUrl }: CmsProviderProps) => {
+export const CmsProvider = ({
+  children,
+  baseUrl,
+  showNotification,
+}: CmsProviderProps) => {
   const [cookies] = useCookies(["cms-token"]);
   const token = cookies["cms-token"];
   const apiContext = useMemo<CmsApiContext>(() => {
@@ -27,7 +34,8 @@ export const CmsProvider = ({ children, baseUrl }: CmsProviderProps) => {
             ? { ...data?.headers, authorization: `bearer ${token}` }
             : data?.headers,
         }),
-      baseUrl
+      baseUrl,
+      showNotification
     );
     return api;
   }, [token, baseUrl]);

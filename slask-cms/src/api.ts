@@ -55,7 +55,19 @@ const defaultSearchOptions: SearchOptions = {
   _source: [],
 };
 
-export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
+export const cmsApiFactory = (
+  fetch: ParentFetch,
+  baseUrl = "",
+  showNotification?: (data: string | Error) => any
+): CmsApi => {
+  const jsonFetch = <T>(input: RequestInfo | URL, init?: RequestInit) =>
+    fetch(input, init)
+      .then((d) => asJson<T>(d))
+      .catch((err) => {
+        if (showNotification) return showNotification(err);
+        return err;
+      });
+
   const search = (
     section: string,
     term: string,
@@ -65,8 +77,8 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
       from,
       _source,
     }: SearchOptions = defaultSearchOptions
-  ) => {
-    return fetch(`${baseUrl}/api/${section}/_search`, {
+  ) =>
+    jsonFetch<SearchResults>(`${baseUrl}/api/${section}/_search`, {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -82,48 +94,56 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
         },
         _source,
       }),
-    }).then((d) => asJson<SearchResults>(d));
-  };
+    });
+
+  const showMessage =
+    <T>(text: string) =>
+    (d: T) => {
+      if (showNotification && d != null) {
+        showNotification(text);
+      }
+      return d;
+    };
   return {
     getPage(url) {
-      return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`).then((d) =>
-        asJson<Page>(d)
-      );
+      return jsonFetch<Page>(`${baseUrl}/page/${fixCmsUrl(url)}`);
     },
     getUrls(url = "") {
-      return fetch(`${baseUrl}/page/${fixCmsUrl(url)}_urls.json`).then((d) =>
-        asJson<{ url: string; title: string }[]>(d)
+      return jsonFetch<{ url: string; title: string }[]>(
+        `${baseUrl}/page/${fixCmsUrl(url)}_urls.json`
       );
     },
     getTree(url = "") {
-      return fetch(`${baseUrl}/page/${fixCmsUrl(url)}_tree.json`).then((d) =>
-        asJson<TreeNode[]>(d)
+      return jsonFetch<TreeNode[]>(
+        `${baseUrl}/page/${fixCmsUrl(url)}_tree.json`
       );
     },
     savePage(url, page) {
-      return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`, {
+      return jsonFetch<Page[]>(`${baseUrl}/page/${fixCmsUrl(url)}`, {
         method: "POST",
         body: JSON.stringify(page),
-      }).then((d) => asJson<Page[]>(d));
+      }).then(showMessage(`Page saved: ${url}`));
     },
     deletePage(url) {
       return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`, {
         method: "DELETE",
-      }).then((d) => d.ok);
+      })
+        .then((d) => d.ok)
+        .then(showMessage(`Page deleted: ${url}`));
     },
     updatePage(url, page) {
-      return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`, {
+      return jsonFetch<Page>(`${baseUrl}/page/${fixCmsUrl(url)}`, {
         method: "PUT",
         body: JSON.stringify(page),
         headers: {},
-      }).then((d) => asJson<Page>(d));
+      }).then(showMessage(`Page updated`));
     },
     getAssets(url) {
-      return fetch(`${baseUrl}/assets/${fixCmsUrl(url)}/`, {
+      return jsonFetch<AssetFile[]>(`${baseUrl}/assets/${fixCmsUrl(url)}/`, {
         headers: {
           accept: "application/json",
         },
-      }).then((d) => asJson<AssetFile[]>(d));
+      });
     },
     searchModule(term) {
       return search("module", term);

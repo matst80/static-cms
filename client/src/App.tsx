@@ -5,17 +5,12 @@ import { PageObjectEditor } from "./editors/PageEditor";
 import { useCms, useSearchPage } from "./useCms";
 import { useEditorDialog } from "./editors/EditorDialog";
 
-const defaultPageSettings = {
-  modules: [],
-  url: "",
-};
-
 function CreatePageButton() {
   const { savePage } = useCms();
-  const { dialog, setOpen } = useEditorDialog<Page>(
+  const { dialog, setOpen } = useEditorDialog(
     defaultPageSettings,
     {
-      "Create page": (page) => {
+      "Create page": (page: Page) => {
         savePage(page.url, page);
         return true;
       },
@@ -31,6 +26,11 @@ function CreatePageButton() {
     </>
   );
 }
+
+const defaultPageSettings = {
+  modules: [],
+  url: "",
+};
 
 function App() {
   const [term, setTerm] = useState<string | undefined>(undefined);

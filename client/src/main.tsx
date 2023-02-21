@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { CookiesProvider } from "react-cookie";
 import App from "./App";
-import "./index.css";
 import { CmsProvider } from "./useCms";
+import { toast, ToastContainer } from "react-toastify";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import {
@@ -15,7 +15,8 @@ import PageEditor from "./editors/PageEditor";
 import { cmsApiFactory } from "slask-cms";
 import PagePreview from "./components/PagePreview";
 import ErrorPage from "./ErrorPage";
-
+import "react-toastify/dist/ReactToastify.css";
+import "./index.css";
 const baseUrl = "";
 
 const { getUrls, getPage } = cmsApiFactory(fetch, baseUrl);
@@ -51,7 +52,45 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <CookiesProvider>
       <QueryClientProvider client={queryClient}>
-        <CmsProvider baseUrl={baseUrl}>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+        <CmsProvider
+          baseUrl={baseUrl}
+          showNotification={(message) => {
+            console.log(message);
+            if (typeof message === "string") {
+              toast(message.toString(), {
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+              });
+            } else {
+              toast.error(message.toString(), {
+                autoClose: 10000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+              });
+            }
+          }}
+        >
           <RouterProvider router={router} />
         </CmsProvider>
       </QueryClientProvider>
