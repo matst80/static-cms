@@ -9,17 +9,20 @@ export type Page = {
   modified?: number;
 };
 
-export type PageModuleWithProps<T extends Record<string,unknown>, TSettings extends Settings = Settings> = {
-    type: string;
-    id?: string;
-    props?: T
-    links?: Link[];
-    images?: Image[];
-    settings: TSettings;
-    modules?: PageModule[];
-}
+export type PageModuleWithProps<
+  T extends Record<string, unknown>,
+  TSettings extends Settings = Settings
+> = {
+  type: string;
+  id?: string;
+  props?: T;
+  links?: Link[];
+  images?: Image[];
+  settings: TSettings;
+  modules?: PageModule[];
+};
 
-export type PageModule = PageModuleWithProps<Record<string,unknown>>;
+export type PageModule = PageModuleWithProps<Record<string, unknown>>;
 
 export type Settings = {
   validTo?: number;
@@ -39,7 +42,7 @@ export type Image = {
 
 export type ModuleProps<
   TProps extends Record<string, unknown>,
-  TSettings extends Record<string, unknown>=Record<string,never>
+  TSettings extends Record<string, unknown> = Record<string, never>
 > = TProps & {
   settings: Settings & TSettings;
   links?: Link[];

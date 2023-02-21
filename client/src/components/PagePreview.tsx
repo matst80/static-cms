@@ -28,7 +28,10 @@ export default function PagePreview() {
     setPage(loadedPage);
   }, [loadedPage]);
   const updateModule = (module: PageModule) =>
-    setPage({ ...page, modules: replaceModuleContent(module, page.modules) });
+    setPage({
+      ...page,
+      modules: replaceModuleContent(module, page.modules) ?? [],
+    });
 
   return (
     <>
