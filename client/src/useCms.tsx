@@ -1,7 +1,13 @@
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "react-query";
-import { CmsApi, cmsApiFactory } from "slask-cms";
+import {
+  CmsApi,
+  cmsApiFactory,
+  Page,
+  PageModule,
+  SearchResults,
+} from "slask-cms";
 
 type CmsApiContext = CmsApi;
 
@@ -52,4 +58,26 @@ export const useUrls = (url = "") => {
 export const useAssets = (url = "") => {
   const { getAssets } = useCms();
   return useQuery("cms-assets:" + url, () => getAssets(url));
+};
+
+export const useSearchPage = (term?: string) => {
+  const { searchPage } = useCms();
+  return useQuery<string, unknown, SearchResults<Page>>(
+    "cms-query-page:" + term,
+    () => searchPage(term ?? ""),
+    {
+      enabled: !!term?.length,
+    }
+  );
+};
+
+export const useSearchModule = (term?: string) => {
+  const { searchModule } = useCms();
+  return useQuery<string, unknown, SearchResults<PageModule>>(
+    "cms-query-module:" + term,
+    () => searchModule(term ?? ""),
+    {
+      enabled: !!term?.length,
+    }
+  );
 };

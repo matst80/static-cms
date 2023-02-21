@@ -1,4 +1,5 @@
 import { AssetFile, Page } from "types/page-and-components";
+import { SearchResults } from "types/searchresults";
 
 export type ParentFetch = (
   input: RequestInfo | URL,
@@ -27,9 +28,25 @@ export type CmsApi = {
   deletePage(url: string): Promise<boolean>;
   updatePage(url: string, page: Partial<Page>): Promise<Page>;
   getAssets(url: string): Promise<AssetFile[]>;
+  searchPage(term: string): Promise<SearchResults>;
+  searchModule(term: string): Promise<SearchResults>;
 };
 
 export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
+  const search = (section: string, term: string) => {
+    return fetch(`${baseUrl}/api/${section}/_search`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({
+        query: {
+          term,
+        },
+      }),
+    }).then((d) => asJson<SearchResults>(d));
+  };
   return {
     getPage(url) {
       return fetch(`${baseUrl}/page/${fixCmsUrl(url)}`).then((d) =>
@@ -70,6 +87,12 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
           accept: "application/json",
         },
       }).then((d) => asJson<AssetFile[]>(d));
+    },
+    searchModule(term) {
+      return search("module", term);
+    },
+    searchPage(term) {
+      return search("page", term);
     },
   };
 };

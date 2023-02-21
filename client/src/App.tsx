@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useLoaderData } from "react-router-dom";
-import { useCms } from "./useCms";
+import { useCms, useSearchPage } from "./useCms";
 
 function App() {
+  const [term, setTerm] = useState<string | undefined>(undefined);
   const { savePage } = useCms();
   const [urlToCreate, setUrlToCreate] = useState("");
   const createNewPage: React.FormEventHandler<HTMLFormElement> = (e) => {
@@ -19,7 +20,7 @@ function App() {
     }
   };
   const urls = useLoaderData() as { url: string; title?: string }[];
-
+  const { data } = useSearchPage(term);
   return (
     <div>
       <div className="flex">
@@ -44,7 +45,16 @@ function App() {
             </form>
           </div>
         </aside>
-
+        <input value={term ?? ""} onChange={(e) => setTerm(e.target.value)} />
+        <ul>
+          {data?.hits.hits.map((item) => {
+            return (
+              <li key={item._id}>
+                <pre>{JSON.stringify(item, null, 2)}</pre>
+              </li>
+            );
+          })}
+        </ul>
         <div className="h-full flex-grow">
           <Outlet />
         </div>

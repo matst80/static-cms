@@ -13,11 +13,48 @@ type IndexProperty = {
   store?: boolean;
   aggregatable?: boolean;
   highlightable?: boolean;
+  sortable?: boolean;
 };
 
 type IndexProperties<T extends Record<string, unknown>> = Partial<{
   [key in keyof T | string]: IndexProperty;
 }>;
+
+const pageModuleFields: IndexProperties<PageModule> = {
+  moduleId: { type: "text", index: true, store: true, highlightable: true },
+  text: { type: "text", index: true, store: true, highlightable: true },
+};
+
+const pageFields: IndexProperties<Page> = {
+  url: { type: "text", index: true, store: true, highlightable: true },
+  seoTitle: { type: "text", index: true, store: true, highlightable: true },
+  created: {
+    type: "numeric",
+    store: true,
+    index: true,
+    sortable: true,
+  },
+  modified: {
+    type: "numeric",
+    store: true,
+    index: true,
+    sortable: true,
+  },
+  moduleIds: {
+    type: "text",
+    index: true,
+    store: true,
+    highlightable: true,
+  },
+  seoDescription: {
+    type: "text",
+    index: true,
+    store: true,
+    highlightable: false,
+  },
+};
+
+type Indexes = "page" | "module";
 
 export const zincSearchFactory = ({
   baseUrl,
@@ -40,7 +77,7 @@ export const zincSearchFactory = ({
     });
 
   const createIndex = <T extends Record<string, unknown>>(
-    name: string,
+    name: Indexes,
     properties: IndexProperties<T>
   ) =>
     parentFetch(`/api/index/`, {
@@ -53,39 +90,29 @@ export const zincSearchFactory = ({
           properties,
         },
       }),
+    }).then((d) => {
+      if (!d.ok) {
+        return updateMapping(name, properties);
+      }
+      return d;
     });
 
-  createIndex<PageModule>("module", {
-    moduleId: { type: "text", index: true, store: true, highlightable: true },
-    text: { type: "text", index: true, store: true, highlightable: true },
-  });
-  createIndex<Page>("page", {
-    url: { type: "text", index: true, store: true, highlightable: true },
-    seoTitle: { type: "text", index: true, store: true, highlightable: true },
-    created: {
-      type: "numeric",
-      store: true,
-    },
-    modified: {
-      type: "numeric",
-      store: true,
-    },
-    moduleIds: {
-      type: "text",
-      index: true,
-      store: true,
-      highlightable: true,
-    },
-    seoDescription: {
-      type: "text",
-      index: true,
-      store: true,
-      highlightable: false,
-    },
-  });
+  const updateMapping = <T extends Record<string, unknown>>(
+    name: Indexes,
+    properties: IndexProperties<T>
+  ) =>
+    parentFetch(`/api/${name}/_mapping`, {
+      method: "PUT",
+      body: JSON.stringify({
+        properties,
+      }),
+    });
+
+  createIndex<PageModule>("module", pageModuleFields);
+  createIndex<Page>("page", pageFields);
 
   const indexDocument = (
-    index: string,
+    index: Indexes,
     id: string,
     data: Record<string, unknown>
   ) => {

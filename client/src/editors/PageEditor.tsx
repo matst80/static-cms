@@ -1,4 +1,4 @@
-import { FormEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, useLoaderData } from "react-router-dom";
 import { Page } from "slask-cms";
 import { useCms } from "../useCms";
@@ -57,7 +57,6 @@ export default function PageEditor() {
               ? new Date(page.modified).toLocaleString()
               : "Not saved"}
           </span>
-
           <ObjectEditor onChange={setPage} data={page} schema={pageSchema} />
           <div className="toolbox">
             <button className="btn" type="submit">
