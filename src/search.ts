@@ -6,26 +6,17 @@ type ZincOptions = {
   auth: string;
 };
 
-type DateIndexProperty = IndexProperty & {
-  type: "date";
-  format: string;
-  index: boolean;
-  store: boolean;
-  aggregatable: boolean;
-};
-
-type StringIndexProperty = IndexProperty & {
-  type: "string" | "keyword";
-  highlightable: boolean;
-};
-
 type IndexProperty = {
-  index: boolean;
-  store: boolean;
+  type: "text" | "keyword" | "bool" | "numeric" | "date";
+  format?: string;
+  index?: boolean;
+  store?: boolean;
+  aggregatable?: boolean;
+  highlightable?: boolean;
 };
 
 type IndexProperties<T extends Record<string, unknown>> = Partial<{
-  [key in keyof T]: StringIndexProperty | DateIndexProperty;
+  [key in keyof T | string]: IndexProperty;
 }>;
 
 export const zincSearchFactory = ({
@@ -40,6 +31,12 @@ export const zincSearchFactory = ({
         "Content-Type": "application/json",
         Authorization: `Basic ${auth}`,
       },
+    }).then(async (d) => {
+      if (!d.ok) {
+        console.log(input, d.statusText);
+        console.log(await d.text());
+      }
+      return d;
     });
 
   const createIndex = <T extends Record<string, unknown>>(
@@ -59,13 +56,28 @@ export const zincSearchFactory = ({
     });
 
   createIndex<PageModule>("module", {
-    id: { type: "string", index: true, store: true, highlightable: true },
+    moduleId: { type: "text", index: true, store: true, highlightable: true },
+    text: { type: "text", index: true, store: true, highlightable: true },
   });
   createIndex<Page>("page", {
-    url: { type: "string", index: true, store: true, highlightable: true },
-    seoTitle: { type: "string", index: true, store: true, highlightable: true },
+    url: { type: "text", index: true, store: true, highlightable: true },
+    seoTitle: { type: "text", index: true, store: true, highlightable: true },
+    created: {
+      type: "numeric",
+      store: true,
+    },
+    modified: {
+      type: "numeric",
+      store: true,
+    },
+    moduleIds: {
+      type: "text",
+      index: true,
+      store: true,
+      highlightable: true,
+    },
     seoDescription: {
-      type: "string",
+      type: "text",
       index: true,
       store: true,
       highlightable: false,
@@ -84,11 +96,15 @@ export const zincSearchFactory = ({
   };
   return {
     indexPage(data) {
-      return indexDocument("page", data.url, data);
+      return indexDocument("page", data.url.split("/").join("-"), {
+        ...data,
+        moduleIds: data.modules.map((d) => d.id).join(","),
+      });
     },
     indexModule(module) {
       if (!module || !module.id) return Promise.reject("Missing id");
-      return indexDocument("module", module.id, module);
+      const { id, ...data } = module;
+      return indexDocument("module", id, { ...data, moduleId: id });
     },
   };
 };
