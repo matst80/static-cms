@@ -1,10 +1,32 @@
-import { Page } from "slask-cms";
+import { Page, PageModule } from "slask-cms";
 import { SearchProvider } from "./types/search-provider";
 
 type ZincOptions = {
   baseUrl: string;
   auth: string;
 };
+
+type DateIndexProperty = IndexProperty & {
+  type: "date";
+  format: string;
+  index: boolean;
+  store: boolean;
+  aggregatable: boolean;
+};
+
+type StringIndexProperty = IndexProperty & {
+  type: "string" | "keyword";
+  highlightable: boolean;
+};
+
+type IndexProperty = {
+  index: boolean;
+  store: boolean;
+};
+
+type IndexProperties<T extends Record<string, unknown>> = Partial<{
+  [key in keyof T]: StringIndexProperty | DateIndexProperty;
+}>;
 
 export const zincSearchFactory = ({
   baseUrl,
@@ -19,6 +41,36 @@ export const zincSearchFactory = ({
         Authorization: `Basic ${auth}`,
       },
     });
+
+  const createIndex = <T extends Record<string, unknown>>(
+    name: string,
+    properties: IndexProperties<T>
+  ) =>
+    parentFetch(`/api/index/`, {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        storage_type: "disk",
+        shard_num: 1,
+        mappings: {
+          properties,
+        },
+      }),
+    });
+
+  createIndex<PageModule>("module", {
+    id: { type: "string", index: true, store: true, highlightable: true },
+  });
+  createIndex<Page>("page", {
+    url: { type: "string", index: true, store: true, highlightable: true },
+    seoTitle: { type: "string", index: true, store: true, highlightable: true },
+    seoDescription: {
+      type: "string",
+      index: true,
+      store: true,
+      highlightable: false,
+    },
+  });
 
   const indexDocument = (
     index: string,
