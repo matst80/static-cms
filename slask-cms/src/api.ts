@@ -65,9 +65,11 @@ export const cmsApiFactory = (fetch: ParentFetch, baseUrl = ""): CmsApi => {
       }).then((d) => asJson<Page>(d));
     },
     getAssets(url) {
-      return fetch(`${baseUrl}/assets/${fixCmsUrl(url)}`).then((d) =>
-        asJson<AssetFile[]>(d)
-      );
+      return fetch(`${baseUrl}/assets/${fixCmsUrl(url)}/`, {
+        headers: {
+          accept: "application/json",
+        },
+      }).then((d) => asJson<AssetFile[]>(d));
     },
   };
 };

@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { useQuery } from "react-query";
-import { Image } from "slask-cms";
+import { AssetFile, Image } from "slask-cms";
 import { useAssets } from "../useCms";
 import { stop } from "../utils";
 import { Dialog } from "./Dialog";
@@ -58,12 +58,18 @@ function FileUploadMultiple() {
   );
 }
 
-function FileList({ path }: FileListProps) {
+function FileList({ path, onSelect }: FileListProps) {
   const { data } = useAssets(path);
   return (
     <div className="grid grid-cols-5">
       {data?.map((file) => {
-        return <div>{JSON.stringify(file)}</div>;
+        const { name, size } = file;
+        return (
+          <div className="flex-col" onClick={() => onSelect(file)}>
+            {name}
+            <span>{size}</span>
+          </div>
+        );
       })}
     </div>
   );
@@ -71,6 +77,7 @@ function FileList({ path }: FileListProps) {
 
 type FileListProps = {
   path: string;
+  onSelect: (file: AssetFile) => void;
 };
 
 export default function ImagesEditor({
@@ -89,7 +96,18 @@ export default function ImagesEditor({
         );
       })}
       <Dialog open={showBrowser} onClose={() => setShowBrowser(false)}>
-        <FileList path="images" />
+        <FileList
+          path="images"
+          onSelect={(file) =>
+            onChange([
+              ...(data ?? []),
+              {
+                src: `/assets/image/${file.name}`,
+                title: file.name,
+              },
+            ])
+          }
+        />
         <div>
           Upload:
           <FileUploadMultiple />
