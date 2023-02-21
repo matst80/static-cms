@@ -16,6 +16,7 @@ import { pageHandlerFactory } from "./pagehandler";
 import { SectionHandler } from "./types/server";
 import { authOptions } from "./settings";
 import formidable from "formidable";
+import { zincSearchFactory } from "./search";
 
 const getHandler =
   process.env.NODE_ENV === "development"
@@ -30,7 +31,11 @@ const db = redisStorage({
   url: process.env.REDIS ?? "redis://:slaskdb@localhost:6379",
 });
 
-const pageHandler = pageHandlerFactory(db);
+const indexProvider = zincSearchFactory({
+  baseUrl: process.env.ZINC ?? "http://10.10.1.4:4080",
+  auth: process.env.ZINC_AUTH ?? "YWRtaW46c2xhc2tjbXM=",
+});
+const pageHandler = pageHandlerFactory(db, indexProvider);
 const { authHandler, validToken } = authHandlerFactory(authOptions);
 urlGeneratorFactory(db);
 

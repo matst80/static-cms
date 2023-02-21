@@ -86,15 +86,7 @@ export default function ImagesEditor({
 }: FieldEditorProps<Image[]>) {
   const [showBrowser, setShowBrowser] = useState<boolean>(false);
   return (
-    <div className="flex">
-      {data?.map(({ src, title }) => {
-        return (
-          <div>
-            <img src={src} title={title} />
-            <span>{title}</span>
-          </div>
-        );
-      })}
+    <>
       <Dialog open={showBrowser} onClose={() => setShowBrowser(false)}>
         <FileList
           path="images"
@@ -114,8 +106,18 @@ export default function ImagesEditor({
           <FileUploadMultiple />
         </div>
       </Dialog>
+      <div className="flex">
+        {data?.map(({ src, title }) => {
+          return (
+            <div>
+              <img src={src} title={title} />
+              <span>{title}</span>
+            </div>
+          );
+        })}
 
-      <button onClick={stop(() => setShowBrowser(true))}>Open browser</button>
-    </div>
+        <button onClick={stop(() => setShowBrowser(true))}>Open browser</button>
+      </div>
+    </>
   );
 }

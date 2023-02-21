@@ -1,4 +1,15 @@
 services:
+  search:
+    container_name: search
+    image: public.ecr.aws/zinclabs/zinc:latest
+    volumes:
+      - ./search:/data
+    ports:
+      - 4080:4080
+    environment:
+      - ZINC_DATA_PATH=/data
+      - ZINC_FIRST_ADMIN_USER=admin
+      - ZINC_FIRST_ADMIN_PASSWORD=slaskcms
   redis:
     container_name: redis
     restart: unless-stopped
