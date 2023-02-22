@@ -29,6 +29,7 @@
   "license": "ISC",
   "dependencies": {
     "formidable": "^2.1.1",
+    "prom-client": "^14.1.1",
     "redis": "^4.6.4",
     "short-unique-id": "^4.4.4",
     "slask-cms": "^1.0.0"

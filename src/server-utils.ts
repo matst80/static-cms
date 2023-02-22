@@ -1,7 +1,17 @@
 import http from "http";
+import client from "prom-client";
+
+const collectDefaultMetrics = client.collectDefaultMetrics;
+
+collectDefaultMetrics();
+
+const counter = new client.Counter({
+  name: "jsonrequests",
+  help: "metric_help",
+});
 
 export type JsonRequest = http.IncomingMessage & {
-  body: ()=>null | Promise<unknown>;
+  body: () => null | Promise<unknown>;
 };
 
 export type JsonResponse = http.ServerResponse<http.IncomingMessage> & {
@@ -57,11 +67,20 @@ export const jsonRequest =
     req: http.IncomingMessage,
     res: http.ServerResponse<http.IncomingMessage>
   ) => {
-    const { url,method } = req;
+    const { url, method } = req;
     if (url?.startsWith("/auth/")) {
       return authHandler(req, res);
     }
-    (req as JsonRequest).body = ()=>method==='GET'?null:json(req);
+    if (url?.startsWith("/metrics")) {
+      res.setHeader("Content-Type", client.register.contentType);
+      client.register.metrics().then((data) => {
+        res.end(data);
+      });
+
+      return;
+    }
+    counter.inc();
+    (req as JsonRequest).body = () => (method === "GET" ? null : json(req));
     (res as JsonResponse).json = (prm) => handle(res, prm);
     (res as JsonResponse).error = (err) => error(res, err);
     handle(res, handler(req as JsonRequest, res as JsonResponse));
