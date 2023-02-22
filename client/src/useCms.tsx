@@ -1,4 +1,10 @@
-import { createContext, PropsWithChildren, useContext, useMemo } from "react";
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "react-query";
 import {
@@ -88,4 +94,16 @@ export const useSearchModule = (term?: string) => {
       enabled: !!term?.length,
     }
   );
+};
+
+export const useFileUpload = () => {
+  const { uploadAssets } = useCms();
+  const [files, setFiles] = useState<FileList | null>(null);
+  const startUpload = (assetType: "image" | "video" | "data" = "image") => {
+    if (!files) {
+      return Promise.reject("No files to upload");
+    }
+    uploadAssets(files, assetType);
+  };
+  return { files: files ? Array.from(files) : [], setFiles, startUpload };
 };

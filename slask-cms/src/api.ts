@@ -20,6 +20,10 @@ const asJson = <T>(d: Response) => {
 
 type TreeNode = { url: string; children: Node[] };
 
+type UploadResult = {
+  files: { name }[];
+};
+
 export type CmsApi = {
   getPage(url: string): Promise<Page>;
   getUrls(url?: string): Promise<{ url: string; title?: string }[]>;
@@ -30,6 +34,7 @@ export type CmsApi = {
   getAssets(url: string): Promise<AssetFile[]>;
   searchPage(term: string): Promise<SearchResults>;
   searchModule(term: string): Promise<SearchResults>;
+  uploadAssets(files: FileList, subFolder?: string): Promise<UploadResult>;
 };
 
 type SearchTypes =
@@ -150,6 +155,17 @@ export const cmsApiFactory = (
     },
     searchPage(term) {
       return search("page", term);
+    },
+    uploadAssets(files, subFolder = "images/") {
+      const data = new FormData();
+      Array.from(files).forEach((file, i) => {
+        data.append(`file-${i}`, file, file.name);
+      });
+
+      return jsonFetch<UploadResult>(`/assets/${subFolder}/¨`, {
+        method: "POST",
+        body: data,
+      });
     },
   };
 };

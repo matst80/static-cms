@@ -34,7 +34,7 @@ body {
 	}
 
 	.field input {
-		padding: 4px;
+		@apply px-4 py-2 border border-gray-300 rounded-md;
 	}
 
 	.field input[type="text"] {

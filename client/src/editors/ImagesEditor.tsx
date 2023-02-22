@@ -1,7 +1,6 @@
 import { ChangeEvent, useState } from "react";
-import { useQuery } from "react-query";
 import { AssetFile, Image } from "slask-cms";
-import { useAssets } from "../useCms";
+import { useAssets, useFileUpload } from "../useCms";
 import { stop } from "../utils";
 import { Dialog } from "./Dialog";
 import { FieldEditorProps } from "./editor-types";
@@ -11,35 +10,15 @@ const ImageBrowser = () => {
 };
 
 function FileUploadMultiple() {
-  const [fileList, setFileList] = useState<FileList | null>(null);
+  const { startUpload, setFiles, files } = useFileUpload();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFileList(e.target.files);
+    setFiles(e.target.files);
   };
 
   const handleUploadClick = () => {
-    if (!fileList) {
-      return;
-    }
-
-    // 👇 Create new FormData object and append files
-    const data = new FormData();
-    files.forEach((file, i) => {
-      data.append(`file-${i}`, file, file.name);
-    });
-
-    // 👇 Uploading the files using the fetch API to the server
-    fetch("/assets/images/", {
-      method: "POST",
-      body: data,
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.error(err));
+    startUpload("image");
   };
-
-  // 👇 files is not an array, but it's iterable, spread to get an array of files
-  const files = fileList ? [...fileList] : [];
 
   return (
     <div>
@@ -118,7 +97,9 @@ export default function ImagesEditor({
           );
         })}
 
-        <button onClick={stop(() => setShowBrowser(true))}>Open browser</button>
+        <button className="btn" onClick={stop(() => setShowBrowser(true))}>
+          Open browser
+        </button>
       </div>
     </>
   );

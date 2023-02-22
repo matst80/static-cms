@@ -15,7 +15,9 @@ export default function InlineEditor({ save }: InlineEditorProps<PageModule>) {
   return (
     <>
       <PageModuleEditor data={data} onChange={onChange} />
-      <button onClick={stop(() => save(data))}>Save</button>
+      <button className="btn" onClick={stop(() => save(data))}>
+        Save
+      </button>
     </>
   );
 }
