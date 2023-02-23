@@ -1,8 +1,8 @@
 export type FieldEditorProps<T, TParent = unknown> = {
-  data: T | undefined;
+  data: T;
   parent?: TParent;
   label?: string;
-  onChange: (data: T | undefined) => void;
+  onChange: (data: T) => void;
 };
 
 export type FieldEditorSchemaProps<

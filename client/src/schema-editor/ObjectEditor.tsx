@@ -7,6 +7,7 @@ import {
   SchemaField,
 } from "./editor-types";
 import { StringEditor } from "./components/StringEditor";
+import { BooleanEditor } from "./components/BooleanEditor";
 
 type ObjectEditorProps<T extends Record<string, unknown>> =
   FieldEditorSchemaProps<T> & {
@@ -22,8 +23,9 @@ function getEditor<T>(
 
   if (!type && schema) {
     return ObjectEditor;
-  }
-  if (typeof type === "string") {
+  } else if (type === "boolean") {
+    return BooleanEditor;
+  } else if (typeof type === "string") {
     return StringEditor;
   }
   return type;

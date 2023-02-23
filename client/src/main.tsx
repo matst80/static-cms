@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { CookiesProvider } from "react-cookie";
 import App from "./App";
 import { CmsProvider } from "./useCms";
-import { toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer, ToastOptions } from "react-toastify";
 import {
   createHashRouter,
   LoaderFunction,
@@ -43,6 +43,13 @@ const router = createHashRouter([
   },
 ]);
 
+const toastDefaults: ToastOptions = {
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: false,
+  theme: "dark",
+};
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <CookiesProvider>
@@ -61,26 +68,17 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <CmsProvider
         baseUrl={baseUrl}
         showNotification={(message) => {
-          console.log(message);
           if (typeof message === "string") {
             toast(message.toString(), {
               autoClose: 5000,
               hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: false,
-              progress: undefined,
-              theme: "dark",
+              ...toastDefaults,
             });
           } else {
             toast.error(message.toString(), {
               autoClose: 10000,
               hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: false,
-              progress: undefined,
-              theme: "dark",
+              ...toastDefaults,
             });
           }
         }}
