@@ -1,8 +1,8 @@
 import { Page } from "slask-cms";
-import { PageObjectEditor } from "./editors/PageEditor";
-import { useCms } from "./useCms";
-import { useEditorDialog } from "./editors/EditorDialog";
-import { stop } from "./utils";
+import { useCms } from "../useCms";
+import { useEditorDialog } from "../schema-editor/dialog/EditorDialog";
+import { stop } from "../utils";
+import { PageObjectEditor } from "../schema-editor/PageEditor";
 
 export function CreatePageButton({ path = "/", title = "Create page" }) {
   const { savePage } = useCms();

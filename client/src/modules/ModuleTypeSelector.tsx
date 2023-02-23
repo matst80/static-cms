@@ -1,4 +1,4 @@
-import { FieldEditor } from "../editors/editor-types";
+import { FieldEditor } from "../schema-editor/editor-types";
 import { getModules } from "./Resolver";
 
 export const ModuleTypeSelector: FieldEditor<string> = ({ data, onChange }) => {

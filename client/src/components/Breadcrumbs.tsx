@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import PageLink from "./components/PageLink";
+import PageLink from "./PageLink";
 import { CreatePageButton } from "./CreatePageButton";
-import { useUrls } from "./useCms";
-import { stop, usePopup } from "./utils";
+import { useUrls } from "../useCms";
+import { stop, usePopup } from "../utils";
 
 type PathPartProps = {
   showArrow: boolean;

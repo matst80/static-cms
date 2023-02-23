@@ -1,7 +1,12 @@
 import { useState } from "react";
-import { Schema } from "./editor-types";
-import ObjectEditor from "./ObjectEditor";
-import { Dialog, DialogProps, DialogButtons, curryButtons } from "./Dialog";
+import { Schema } from "../editor-types";
+import ObjectEditor from "../ObjectEditor";
+import {
+  Dialog,
+  DialogProps,
+  DialogButtons,
+  curryButtons,
+} from "../../editors/Dialog";
 
 export function SchemaDialog<T extends Record<string, unknown>>({
   data,

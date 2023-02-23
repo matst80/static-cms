@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useSearchPage } from "./useCms";
-import { usePopup } from "./utils";
+import { useSearchPage } from "../useCms";
+import { usePopup } from "../utils";
 
 export function PageSearch() {
   const [term, setTerm] = useState<string | undefined>(undefined);

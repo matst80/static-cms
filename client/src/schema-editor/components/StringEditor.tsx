@@ -1,4 +1,4 @@
-import { FieldEditor } from "./editor-types";
+import { FieldEditor } from "../editor-types";
 
 export const StringEditor: FieldEditor<unknown> = ({
   data,

@@ -3,7 +3,7 @@ import { AssetFile, Image } from "slask-cms";
 import { useAssets, useFileUpload } from "../useCms";
 import { stop } from "../utils";
 import { Dialog } from "./Dialog";
-import { FieldEditorProps } from "./editor-types";
+import { FieldEditorProps } from "../schema-editor/editor-types";
 
 const ImageBrowser = () => {
   return <div>bilder</div>;

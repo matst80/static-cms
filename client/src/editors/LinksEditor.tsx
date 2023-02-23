@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "slask-cms";
 import { stop } from "../utils";
 import { Dialog } from "./Dialog";
-import { FieldEditorProps } from "./editor-types";
+import { FieldEditorProps } from "../schema-editor/editor-types";
 
 export default function LinksEditor({
   data,

@@ -1,7 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import { useLastedited } from "./useCms";
-import { Breadcrumbs } from "./Breadcrumbs";
-import { PageSearch } from "./PageSearch";
+import { Breadcrumbs } from "./components/Breadcrumbs";
+import { PageSearch } from "./components/PageSearch";
 import PageLink from "./components/PageLink";
 
 function App() {

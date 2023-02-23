@@ -6,7 +6,7 @@ import {
   SchemaEditor,
   SchemaField,
 } from "./editor-types";
-import { StringEditor } from "./StringEditor";
+import { StringEditor } from "./components/StringEditor";
 
 type ObjectEditorProps<T extends Record<string, unknown>> =
   FieldEditorSchemaProps<T> & {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, useLoaderData } from "react-router-dom";
 import { Page } from "slask-cms";
-import { mutatePage, useCms } from "../useCms";
+import { mutatePage } from "../useCms";
 import { stop } from "../utils";
 import { FieldEditor, Schema } from "./editor-types";
 import ObjectEditor from "./ObjectEditor";

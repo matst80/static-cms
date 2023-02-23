@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { PageModule } from "slask-cms";
-import { Schema } from "../editors/editor-types";
+import { Schema } from "../schema-editor/editor-types";
 
 type EditingContext<T> = {
   state: EditingState;

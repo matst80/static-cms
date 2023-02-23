@@ -5,7 +5,7 @@ import {
   DialogButtons,
   ButtonFunction,
   curryButtons,
-} from "./Dialog";
+} from "../../editors/Dialog";
 
 type Editor<T extends Record<string, unknown>> = (props: {
   data: T;

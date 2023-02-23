@@ -1,6 +1,6 @@
 import { ModuleProps, PageModule } from "slask-cms";
 import { useEditor } from "../components/Editor";
-import { Schema } from "../editors/editor-types";
+import { Schema } from "../schema-editor/editor-types";
 import { pageModuleSchema } from "./schemas";
 
 import NotFound from "./NotFound";

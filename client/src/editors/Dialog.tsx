@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import { stop } from "../utils";
-import { FieldEditorSchemaProps } from "./editor-types";
+import { FieldEditorSchemaProps } from "../schema-editor/editor-types";
 
 export const Dialog = ({ open, children, onClose, buttons }: DialogProps) => {
   const btns = Object.entries(buttons ?? { Close: () => true });

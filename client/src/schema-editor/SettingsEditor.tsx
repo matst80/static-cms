@@ -1,5 +1,5 @@
 import { Settings } from "slask-cms";
-import DatePicker from "../components/DatePicker";
+import DatePicker from "./components/DatePicker";
 import { changeHandlerFactory } from "../utils";
 import {
   FieldEditorProps,

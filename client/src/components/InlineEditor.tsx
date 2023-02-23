@@ -1,5 +1,5 @@
 import { PageModule } from "slask-cms";
-import PageModuleEditor from "../editors/PageModuleEditor";
+import PageModuleEditor from "../schema-editor/PageModuleEditor";
 import { stop } from "../utils";
 import { useSelected } from "./Editor";
 

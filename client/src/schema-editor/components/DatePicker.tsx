@@ -1,4 +1,4 @@
-import { FieldEditor } from "../editors/editor-types";
+import { FieldEditor } from "../editor-types";
 
 const DatePicker: FieldEditor<number, { min?: number; max?: number }> = ({
   data,
