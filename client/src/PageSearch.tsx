@@ -33,7 +33,7 @@ export function PageSearch() {
       </label>
       <div>
         {data && open ? (
-          <ul className="absolute bg-white rounded-md shadow-lg z-10 p-4 mt-1 w-64 border border-gray-300">
+          <ul className="absolute bg-white rounded-md right-0 shadow-lg z-10 p-4 mt-1 w-64 border border-gray-300">
             {data?.hits.hits.map(({ _id, _source }) => {
               const { seoTitle, url } = _source;
               return (

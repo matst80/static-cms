@@ -10,7 +10,7 @@ function App() {
   return (
     <>
       <div className="border-b border-gray-400 p-4 flex">
-        <div className="pr-6 mr-6 border-r border-gray-300">
+        <div className="pr-6 mr-6 border-r border-gray-300 flex-1">
           <Breadcrumbs />
         </div>
         <div>

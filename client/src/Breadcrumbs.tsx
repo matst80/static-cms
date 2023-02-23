@@ -49,10 +49,8 @@ function PathPart({ showArrow, path, file }: PathPartProps) {
 
 export function Breadcrumbs() {
   const { pathname } = useLocation();
-  const parts = pathname
-    .replace("/page/", "")
-    .replace("/page-edit/", "")
-    .split("/");
+  const parts = pathname.split("/").slice(2);
+
   return (
     <div className="flex gap-2">
       {parts.map((part, i, arr) => {

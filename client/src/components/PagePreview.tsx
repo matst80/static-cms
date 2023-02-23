@@ -75,10 +75,14 @@ export default function PagePreview() {
       ) : (
         <p>No modules</p>
       )}
-      <Link className="btn" to={`/page-edit/${page.url}`}>
-        Edit
-      </Link>
-      <button onClick={stop(() => savePage(page))}>Save</button>
+      <div className="buttongroup">
+        <Link to={`/page-edit/${page.url}`}>
+          <button className="btn">Edit</button>
+        </Link>
+        <button className="btn" onClick={stop(() => savePage(page))}>
+          Save
+        </button>
+      </div>
     </>
   );
 }
