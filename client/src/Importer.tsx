@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { Page, PageModule } from "slask-cms";
+import { mutatePage } from "./useCms";
+import { stop } from "./utils";
 
 const baseUrl = "/blueprint/servlet/service";
 
@@ -140,15 +142,23 @@ const convertPage = ({
 };
 
 export default function Importer() {
-  const [url, setUrl] = useState<string>("/");
+  const { mutate } = mutatePage();
+  const [url, setUrl] = useState<string>("/kundtjanst");
   const { data } = useQuery("cm" + url, () => getCoreMediaPage(url), {
     enabled: !!url.length,
     refetchInterval: 36000,
   });
+
   return (
     <div>
       <input value={url} onChange={(e) => setUrl(e.target.value)} />
       <pre>{JSON.stringify(data, null, 2)}</pre>
+      <button
+        className="btn"
+        onClick={stop(() => (data ? mutate(data) : console.log("BAJS")))}
+      >
+        Save
+      </button>
     </div>
   );
 }
