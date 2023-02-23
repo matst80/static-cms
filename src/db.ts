@@ -21,6 +21,7 @@ export const redisStorage = (
   client.connect();
   const clientPubSub = createClient(options);
   clientPubSub.connect();
+  const getTitle = (url: string) => client.hGet(url, "title");
   return {
     getId() {
       return uid.stamp(32);
@@ -55,12 +56,15 @@ export const redisStorage = (
       const urls = await client.zRange(pageListId, 0, -1);
       return await Promise.all(
         urls.map((url) =>
-          client.hGet(url, "title").then((title = "") => ({ url:`/${url}`, title }))
+          getTitle(url).then((title = "") => ({ url: `/${url}`, title }))
         )
       );
     },
     getPage(url) {
-      return client.hGet(Page, url).then(d=>d?JSON.parse(d):undefined);
+      return client
+        .hGet(Page, url)
+        .then((d) => (d ? JSON.parse(d) : undefined));
     },
+    getTitle,
   };
 };

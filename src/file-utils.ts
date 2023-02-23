@@ -1,5 +1,5 @@
 import { createWriteStream, existsSync, mkdirSync, ReadStream } from "node:fs";
-import { writeFile, mkdir, readdir } from "node:fs/promises";
+import { writeFile, mkdir, readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -94,8 +94,8 @@ export const getStoragePathFromPage = ({ url }: Page) =>
 export const getStoragePathFromModule = ({ id }: PageModule) =>
   join(staticPath, "module", `${id}.json`);
 
-export const getStoragePathForUrlList = () =>
-  join(staticPath, "page", `_urls.json`);
+export const getStoragePathForLastUrlList = () =>
+  join(staticPath, "page", `_last.json`);
 
 export const getStoragePathForUrlTree = () =>
   join(staticPath, "page", `_tree.json`);
@@ -110,10 +110,13 @@ export const getPagesInDirectory = async (path: string) => {
   const pathSections = path.split("/");
   pathSections.pop();
   if (pathSections) {
-    const files = await readdir(join(staticPath, "page", ...pathSections));
+    const fsPath = join(staticPath, "page", ...pathSections);
+    const files = await readdir(fsPath);
     return files
-      .filter((d) => d.endsWith(".json"))
-      .map((d) => d.replace(".json", ""));
+      .filter((d) => d.endsWith(".json") && !d.startsWith("_"))
+      .map((d) => {
+        return [...pathSections, d.replace(".json", "")].join("/");
+      });
   }
   return [];
 };

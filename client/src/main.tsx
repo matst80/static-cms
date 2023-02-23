@@ -4,8 +4,6 @@ import { CookiesProvider } from "react-cookie";
 import App from "./App";
 import { CmsProvider } from "./useCms";
 import { toast, ToastContainer } from "react-toastify";
-
-import { QueryClient, QueryClientProvider } from "react-query";
 import {
   createHashRouter,
   LoaderFunction,
@@ -19,7 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 const baseUrl = "";
 
-const { getUrls, getPage } = cmsApiFactory(fetch, baseUrl);
+const { getPage } = cmsApiFactory(fetch, baseUrl);
 
 const pageLoader: LoaderFunction = ({ params: { "*": url } }) => {
   return getPage(url ?? "");
@@ -28,7 +26,6 @@ const pageLoader: LoaderFunction = ({ params: { "*": url } }) => {
 const router = createHashRouter([
   {
     path: "/",
-    loader: () => getUrls(),
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
@@ -46,54 +43,50 @@ const router = createHashRouter([
   },
 ]);
 
-const queryClient = new QueryClient();
-
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <CookiesProvider>
-      <QueryClientProvider client={queryClient}>
-        <ToastContainer
-          position="bottom-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
-        <CmsProvider
-          baseUrl={baseUrl}
-          showNotification={(message) => {
-            console.log(message);
-            if (typeof message === "string") {
-              toast(message.toString(), {
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false,
-                progress: undefined,
-                theme: "dark",
-              });
-            } else {
-              toast.error(message.toString(), {
-                autoClose: 10000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: false,
-                progress: undefined,
-                theme: "dark",
-              });
-            }
-          }}
-        >
-          <RouterProvider router={router} />
-        </CmsProvider>
-      </QueryClientProvider>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      <CmsProvider
+        baseUrl={baseUrl}
+        showNotification={(message) => {
+          console.log(message);
+          if (typeof message === "string") {
+            toast(message.toString(), {
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: false,
+              progress: undefined,
+              theme: "dark",
+            });
+          } else {
+            toast.error(message.toString(), {
+              autoClose: 10000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: false,
+              progress: undefined,
+              theme: "dark",
+            });
+          }
+        }}
+      >
+        <RouterProvider router={router} />
+      </CmsProvider>
     </CookiesProvider>
   </React.StrictMode>
 );

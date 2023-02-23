@@ -24,9 +24,12 @@ type UploadResult = {
   files: { name }[];
 };
 
+export type UrlAndTitle = { url: string; title?: string };
+
 export type CmsApi = {
   getPage(url: string): Promise<Page>;
-  getUrls(url?: string): Promise<{ url: string; title?: string }[]>;
+  getUrls(url?: string): Promise<UrlAndTitle[]>;
+  getLastEdited(): Promise<UrlAndTitle[]>;
   getTree(url?: string): Promise<TreeNode[]>;
   savePage(url: string, page: Page): Promise<Page[]>;
   deletePage(url: string): Promise<boolean>;
@@ -115,13 +118,16 @@ export const cmsApiFactory = (
     },
     getUrls(url = "") {
       return jsonFetch<{ url: string; title: string }[]>(
-        `${baseUrl}/page/${fixCmsUrl(url)}_urls.json`
+        `${baseUrl}/page/${fixCmsUrl(url)}_urls`
+      );
+    },
+    getLastEdited() {
+      return jsonFetch<{ url: string; title: string }[]>(
+        `${baseUrl}/page/_last`
       );
     },
     getTree(url = "") {
-      return jsonFetch<TreeNode[]>(
-        `${baseUrl}/page/${fixCmsUrl(url)}_tree.json`
-      );
+      return jsonFetch<TreeNode[]>(`${baseUrl}/page/${fixCmsUrl(url)}_tree`);
     },
     savePage(url, page) {
       return jsonFetch<Page[]>(`${baseUrl}/page/${fixCmsUrl(url)}`, {

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 import { Page, PageModule } from "slask-cms";
 import Resolver, { getModule, getModuleSchema } from "../modules/Resolver";
+import { mutatePage } from "../useCms";
+import { stop } from "../utils";
 import Editor, { useEditor } from "./Editor";
 import InlineEditor from "./InlineEditor";
 
@@ -46,6 +48,7 @@ function ModuleOverview({ modules }: { modules?: PageModule[] }) {
 
 export default function PagePreview() {
   const loadedPage = useLoaderData() as Page;
+  const { mutateAsync: savePage } = mutatePage();
   const [page, setPage] = useState<Page>(loadedPage);
   useEffect(() => {
     setPage(loadedPage);
@@ -75,6 +78,7 @@ export default function PagePreview() {
       <Link className="btn" to={`/page-edit/${page.url}`}>
         Edit
       </Link>
+      <button onClick={stop(() => savePage(page))}>Save</button>
     </>
   );
 }

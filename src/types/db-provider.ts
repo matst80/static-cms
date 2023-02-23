@@ -12,5 +12,6 @@ export type StorageProvider = {
   getUrls: () => Promise<UrlData[]>;
   saveModule: (module: PageModule) => Promise<void>;
   savePage: (page: Page) => Promise<void>;
-  getPage:(url:string)=>Promise<Page|undefined>
+  getTitle: (url: string) => Promise<string | undefined>;
+  getPage: (url: string) => Promise<Page | undefined>;
 };

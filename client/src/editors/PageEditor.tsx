@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, useLoaderData } from "react-router-dom";
 import { Page } from "slask-cms";
-import { useCms } from "../useCms";
+import { mutatePage, useCms } from "../useCms";
 import { stop } from "../utils";
 import { FieldEditor, Schema } from "./editor-types";
 import ObjectEditor from "./ObjectEditor";
@@ -46,7 +46,7 @@ export const PageObjectEditor: FieldEditor<Page> = ({ data, onChange }) => {
 export default function PageEditor() {
   const loadedPage = useLoaderData() as Page;
   const [page, setPage] = useState<Page | undefined>(loadedPage);
-  const { savePage } = useCms();
+  const { mutateAsync: savePage } = mutatePage();
   useEffect(() => {
     setPage(loadedPage);
   }, [loadedPage]);
@@ -54,7 +54,7 @@ export default function PageEditor() {
   const handleSubmit = stop((e) => {
     console.log(e, page?.url);
     if (page?.url != null) {
-      savePage(page.url, page);
+      savePage(page);
     }
   });
 

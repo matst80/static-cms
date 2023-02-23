@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { useCookies } from "react-cookie";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import {
   CmsApi,
   cmsApiFactory,
@@ -14,9 +14,10 @@ import {
   PageModule,
   SearchResults,
 } from "slask-cms";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 type CmsApiContext = CmsApi;
-
+const queryClient = new QueryClient();
 const CmsContext = createContext<CmsApiContext | null>(null);
 
 type CmsProviderProps = {
@@ -46,7 +47,9 @@ export const CmsProvider = ({
     return api;
   }, [token, baseUrl]);
   return (
-    <CmsContext.Provider value={apiContext}>{children}</CmsContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <CmsContext.Provider value={apiContext}>{children}</CmsContext.Provider>
+    </QueryClientProvider>
   );
 };
 
@@ -58,26 +61,45 @@ export const useCms = (): CmsApi => {
   return ctx;
 };
 
+export const mutatePage = () => {
+  const { savePage } = useCms();
+  return useMutation(
+    (page: Page) => savePage(page.url, page).then((d) => d[0]),
+    {
+      onSuccess() {
+        setTimeout(() => {
+          queryClient.invalidateQueries("cmspage");
+        }, 200);
+      },
+    }
+  );
+};
+
 export const usePage = (url = "") => {
   const { getPage, savePage } = useCms();
-  const result = useQuery("cms:" + url, () => getPage(url));
+  const result = useQuery(["cmspage", "cms:" + url], () => getPage(url));
   return { ...result, savePage };
 };
 
 export const useUrls = (url = "") => {
   const { getUrls } = useCms();
-  return useQuery("cms-urls:" + url, () => getUrls(url));
+  return useQuery(["cmspage", "cms-urls:" + url], () => getUrls(url));
+};
+
+export const useLastedited = () => {
+  const { getLastEdited } = useCms();
+  return useQuery(["cmspage", "cms-last"], () => getLastEdited());
 };
 
 export const useAssets = (url = "") => {
   const { getAssets } = useCms();
-  return useQuery("cms-assets:" + url, () => getAssets(url));
+  return useQuery(["cmspage", "cms-assets:" + url], () => getAssets(url));
 };
 
 export const useSearchPage = (term?: string) => {
   const { searchPage } = useCms();
   return useQuery<string, unknown, SearchResults<Page>>(
-    "cms-query-page:" + term,
+    ["cmspage", "cms-query-page:" + term],
     () => searchPage(term ?? ""),
     {
       enabled: !!term?.length,
