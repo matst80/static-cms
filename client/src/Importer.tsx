@@ -24,7 +24,7 @@ export const fixRelativeImage = (uri: string | undefined) => {
     .replace("https://www.elgiganten.se", "");
 };
 
-const sizesMedia = {
+const sizesMedia: Record<string, string> = {
   desktop: "(min-width: 1280px)",
   tablet: "(min-width: 768px)",
   mobile: "(max-width: 768px)",
@@ -32,11 +32,11 @@ const sizesMedia = {
 
 const convertImageUri = ({ breakpoint, images, sizes }: any) => {
   const srcset = images
-    .map(({ width, imageURL }) => {
+    .map(({ width, imageURL }: any) => {
       return `${fixRelativeImage(imageURL)} ${width}w`;
     })
     .join(", ");
-  return { media: sizesMedia[breakpoint], srcset, sizes };
+  return { media: sizesMedia[breakpoint] ?? "", srcset, sizes };
 };
 
 export const convertPicture = ({

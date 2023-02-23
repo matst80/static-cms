@@ -77,9 +77,16 @@ export default function ImagesEditor({
               ...(data?.filter((s) => s.src !== src) ?? []),
               {
                 src,
+                size: [0, 0],
                 alt: file.name,
                 name: file.name,
-                uris: [],
+                uris: [
+                  {
+                    media: "",
+                    sizes: "",
+                    srcset: "",
+                  },
+                ],
               },
             ]);
           }}

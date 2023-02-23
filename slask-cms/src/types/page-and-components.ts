@@ -52,10 +52,10 @@ export type Link = {
 
 export type ExternalPicture = BasePicture;
 export type BasePicture = {
-  size: [width: number, height: number];
+  size?: [width: number, height: number];
   src: string;
-  responsiveViewType: string;
-  alt: string;
+  responsiveViewType?: string;
+  alt?: string;
   name: string;
 };
 

@@ -1,37 +1,34 @@
-import { Block, ModuleProps, NodeAttribute, PageModule } from "slask-cms";
+import { ModuleProps, PageModule } from "slask-cms";
 import { useEditor } from "../components/Editor";
-import { FieldEditor, Schema } from "../schema-editor/editor-types";
+import { Schema } from "../schema-editor/editor-types";
 import { makeModuleSchema, pageModuleSchema } from "./schemas";
 
 import NotFound from "./NotFound";
 import TestModule from "./TestModule";
 import TextModule from "./TextModule";
 import { CmsModuleProps, cmsModules } from "./modules";
-import { getBlock } from "../utils/getBlock";
+import { RichTextEditor } from "../schema-editor/components/RichTextEditor";
 
-export const RichTextEditor: FieldEditor<any> = ({ data, onChange }) => {
-  return <div>{getBlock(data)}</div>;
-};
+const cmsSchema = makeModuleSchema<CmsModuleProps>({
+  headline: {
+    title: "Headline",
+    type: "string",
+  },
+  detailTextJson: {
+    title: "Detail text",
+    type: RichTextEditor,
+  },
+});
 
-const convert = (data: Record<string, any>) =>
-  Object.fromEntries(
+function convert(data: Record<string, any>) {
+  return Object.fromEntries(
     Object.entries(data).map(([key, value]) => {
-      value.schema =
-        value.schema ??
-        makeModuleSchema<CmsModuleProps>({
-          headline: {
-            title: "Headline",
-            type: "string",
-          },
-          detailTextJson: {
-            title: "Detail text",
-            type: RichTextEditor,
-          },
-        });
-      return [key, value];
+      value.schema = value.schema ?? cmsSchema;
+
+      return [key, value as ModuleElement<CmsModuleProps>];
     })
   );
-
+}
 const modules = { NotFound, TestModule, TextModule, ...convert(cmsModules) };
 
 export type ModuleElement<

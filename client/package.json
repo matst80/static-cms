@@ -9,13 +9,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@portabletext/react": "^2.0.1",
+    "@portabletext/types": "^2.0.2",
+    "@tinymce/tinymce-react": "^4.3.0",
+    "raw-loader": "^4.0.2",
     "react": "^18.2.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.8.1",
     "react-toastify": "^9.1.1",
-    "slask-cms": "*"
+    "slask-cms": "*",
+    "tinymce": "^6.3.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",
