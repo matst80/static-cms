@@ -15,6 +15,7 @@ import ErrorPage from "./ErrorPage";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 import PageEditor from "./schema-editor/PageEditor";
+import Importer from "./Importer";
 const baseUrl = "";
 
 const { getPage } = cmsApiFactory(fetch, baseUrl);
@@ -40,6 +41,10 @@ const router = createHashRouter([
         loader: pageLoader,
       },
     ],
+  },
+  {
+    path: "/import",
+    element: <Importer />,
   },
 ]);
 

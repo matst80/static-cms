@@ -24,6 +24,10 @@ export default defineConfig({
         target: "https://cms.tornberg.me",
         changeOrigin: true,
       },
+      "^/blueprint.*": {
+        target: "https://cm.tornberg.me",
+        changeOrigin: true,
+      },
     },
   },
   plugins: [react()],
