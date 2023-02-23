@@ -9,12 +9,12 @@ import {
   LoaderFunction,
   RouterProvider,
 } from "react-router-dom";
-import PageEditor from "./editors/PageEditor";
 import { cmsApiFactory } from "slask-cms";
 import PagePreview from "./components/PagePreview";
 import ErrorPage from "./ErrorPage";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
+import PageEditor from "./schema-editor/PageEditor";
 const baseUrl = "";
 
 const { getPage } = cmsApiFactory(fetch, baseUrl);

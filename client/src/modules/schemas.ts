@@ -1,9 +1,11 @@
 import { PageModule, PageModuleWithProps, Settings } from "slask-cms";
 import { Schema } from "../schema-editor/editor-types";
 import ImagesEditor from "../schema-editor/ImagesEditor";
-import LinksEditor from "../editors/LinksEditor";
-import { PageModulesEditor } from "../editors/PageModulesEditor";
-import SettingsEditor, { settingsSchema } from "../editors/SettingsEditor";
+import LinksEditor from "../schema-editor/LinksEditor";
+import { PageModulesEditor } from "../schema-editor/PageModulesEditor";
+import SettingsEditor, {
+  settingsSchema,
+} from "../schema-editor/SettingsEditor";
 import { ModuleTypeSelector } from "./ModuleTypeSelector";
 
 export const pageModuleSchema: Schema<PageModule> = {
