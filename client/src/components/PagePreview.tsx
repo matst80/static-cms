@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 import { Page, PageModule } from "slask-cms";
-import Resolver, { getModule, getModuleSchema } from "../modules/Resolver";
+import Resolver, { getModuleSchema } from "../modules/Resolver";
 import { mutatePage } from "../useCms";
 import { stop } from "../utils";
 import Editor, { useEditor } from "./Editor";
