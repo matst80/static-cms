@@ -40,7 +40,7 @@ function PathPart({ showArrow, path, file }: PathPartProps) {
               <PageLink key={url} url={url} title={title} />
             ))}
           </ul>
-          <CreatePageButton path={path.join("/")} />
+          <CreatePageButton path={path.join("/")} title="Add subpage" />
         </div>
       ) : null}
     </div>
