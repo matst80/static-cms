@@ -9,11 +9,11 @@ export type FieldEditorSchemaProps<
   T extends Record<string, unknown>,
   TParent = unknown
 > = {
-  data: T | undefined;
+  data: T;
   parent?: TParent;
   schema?: Schema<T>;
   label?: string;
-  onChange: (data: T | undefined) => void;
+  onChange: (data: T) => void;
 };
 
 export type SchemaBase<T> = {
@@ -31,16 +31,18 @@ export type SchemaEditor<T> = SchemaBase<T> & {
   schema: Schema<Record<string, unknown>>;
 };
 
-export type FieldProps<T> = T extends Record<string, unknown>
+export type FieldProps<T> = FieldEditorProps<T>;
+
+/*
+T extends Record<string, unknown>
   ? FieldEditorSchemaProps<T>
-  : FieldEditorProps<T>;
+  :
+  */
 
 export type FieldEditor<T, TProps = Record<string, unknown>> = (
   props: FieldProps<T> & TProps
 ) => JSX.Element | null;
 
 export type Schema<T> = {
-  [key in keyof T]:
-    | SchemaEditor<NonNullable<T[key]>>
-    | SchemaField<NonNullable<T[key]>>;
+  [key in keyof T]: SchemaEditor<T[key]> | SchemaField<T[key]>;
 };

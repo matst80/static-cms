@@ -64,7 +64,7 @@ type FileListProps = {
 export default function ImagesEditor({
   data,
   onChange,
-}: FieldEditorProps<Image[]>) {
+}: FieldEditorProps<Image[] | undefined>) {
   const [showBrowser, setShowBrowser] = useState<boolean>(false);
   return (
     <>
@@ -77,7 +77,9 @@ export default function ImagesEditor({
               ...(data?.filter((s) => s.src !== src) ?? []),
               {
                 src,
-                title: file.name,
+                alt: file.name,
+                name: file.name,
+                uris: [],
               },
             ]);
           }}
@@ -88,11 +90,11 @@ export default function ImagesEditor({
         </div>
       </Dialog>
       <div className="flex">
-        {data?.map(({ src, title }) => {
+        {data?.map(({ src, alt }) => {
           return (
             <div>
-              <img src={src} title={title} />
-              <span>{title}</span>
+              <img src={src} title={alt} />
+              <span>{alt}</span>
             </div>
           );
         })}

@@ -25,7 +25,7 @@ const pageSchema: Schema<Page> = {
     hideTitle: true,
     defaultValue: [],
     title: "Page modules",
-  },
+  } as any,
 };
 
 export const PageObjectEditor: FieldEditor<Page> = ({ data, onChange }) => {

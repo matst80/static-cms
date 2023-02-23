@@ -7,7 +7,7 @@ import { FieldEditorProps } from "../schema-editor/editor-types";
 export default function LinksEditor({
   data,
   onChange,
-}: FieldEditorProps<Link[]>) {
+}: FieldEditorProps<Link[] | undefined>) {
   const [showBrowser, setShowBrowser] = useState<boolean>(false);
 
   return (

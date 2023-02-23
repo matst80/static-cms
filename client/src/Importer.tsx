@@ -104,7 +104,7 @@ const convertModule = ({
   items,
   ...props
 }: any): PageModule => {
-  console.log(props);
+  //console.log(props);
   const { style, ...other } = settings ?? {};
   return {
     id: id?.replace("contentbean:", ""),
@@ -126,18 +126,28 @@ const convertPage = ({
   placements,
   seoTitle,
   seoDescription,
-  pictures,
-  links,
+  teaserImage,
+  teaserTextJson,
+  teaserTitle,
   path,
+  type,
+  ...rest
 }: any): Page => {
-  console.log(path);
+  console.log(rest);
   return {
     seoTitle,
     seoDescription,
+    type,
     url: path?.slice(1).join("/") ?? "/",
+    teaser: {
+      image: teaserImage,
+      text: teaserTextJson,
+      title: teaserTitle,
+    },
     modules: placements
       .filter((d: any) => d.modules?.length)
-      ?.map((d: any) => d.modules.map(convertModule).flat()),
+      ?.map((d: any) => d.modules.map(convertModule))
+      .flat(),
   };
 };
 

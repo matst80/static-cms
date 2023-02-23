@@ -7,6 +7,13 @@ export type Page = {
   modules: PageModule[];
   created?: number;
   modified?: number;
+  type?: string;
+  teaser?: {
+    image?: string;
+    text?: Block;
+    title?: string;
+  };
+  [key: string]: unknown;
 };
 
 export type AssetFile = {
@@ -34,6 +41,7 @@ export type PageModule = PageModuleWithProps<Record<string, unknown>>;
 export type Settings = {
   validTo?: number;
   validFrom?: number;
+  [key: string]: unknown;
 };
 
 export type Link = {
@@ -42,10 +50,24 @@ export type Link = {
   title?: string;
 };
 
-export type Image = {
+export type ExternalPicture = BasePicture;
+export type BasePicture = {
+  size: [width: number, height: number];
   src: string;
-  title: string;
+  responsiveViewType: string;
+  alt: string;
+  name: string;
 };
+
+export type InternalPicture = BasePicture & {
+  uris: {
+    media: string;
+    srcset: string;
+    sizes: string;
+  }[];
+};
+
+export type Image = ExternalPicture | InternalPicture;
 
 export type ModuleProps<
   TProps extends Record<string, unknown>,
@@ -56,4 +78,21 @@ export type ModuleProps<
   links?: Link[];
   images?: Image[];
   modules?: PageModule[];
+};
+
+export type NodeAttribute = {
+  name: string;
+  value: unknown;
+};
+
+export type Block = Node & {
+  name: string;
+  children?: Node[];
+  attributes?: NodeAttribute[];
+};
+
+export type Node = {
+  data?: string;
+  links?: Link[];
+  name?: unknown;
 };

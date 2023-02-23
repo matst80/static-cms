@@ -4,7 +4,7 @@ import { stop } from "../utils";
 import { FieldProps } from "./editor-types";
 import PageModuleEditor from "./PageModuleEditor";
 
-type PageModulesProps = FieldProps<PageModule[]>;
+type PageModulesProps = FieldProps<Array<PageModule> | undefined>;
 
 export function PageModulesEditor({ data = [], onChange }: PageModulesProps) {
   const [open, setOpen] = useState(false);
