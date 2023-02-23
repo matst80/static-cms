@@ -18,7 +18,7 @@ function getEditor<T>(
   field: SchemaEditor<NonNullable<T>> | SchemaField<NonNullable<T>>
 ) {
   const { schema } = field;
-  const { type } = field as any;
+  const { type } = field as { type?: string | FieldEditor<T> };
 
   if (!type && schema) {
     return ObjectEditor;
@@ -40,27 +40,25 @@ export default function ObjectEditor<T extends Record<string, unknown>>({
     <>
       {Object.entries(schema)
         .filter(([key]) => !ignoredFields?.includes(key))
-        .map(
-          ([key, field]: [keyof T, SchemaEditor<any> | SchemaField<any>]) => {
-            const { title, schema, hideTitle, defaultValue } = field;
-            const Editor = getEditor(field);
-            if (!Editor) return null;
-            return (
-              <div className="field" key={key as string}>
-                <label>
-                  {hideTitle ? null : <span>{title}</span>}
-                  <Editor
-                    data={data?.[key] ?? defaultValue}
-                    parent={data}
-                    schema={schema}
-                    onChange={changeHandler(key)}
-                    label={title}
-                  />
-                </label>
-              </div>
-            );
-          }
-        )}
+        .map(([key, field]) => {
+          const { title, schema, hideTitle, defaultValue } = field;
+          const Editor = getEditor(field);
+          if (!Editor) return null;
+          return (
+            <div className="field" key={key as string}>
+              <label>
+                {hideTitle ? null : <span>{title}</span>}
+                <Editor
+                  data={data?.[key] ?? defaultValue}
+                  parent={data}
+                  schema={schema}
+                  onChange={changeHandler(key)}
+                  label={title}
+                />
+              </label>
+            </div>
+          );
+        })}
     </>
   );
 }
