@@ -45,7 +45,7 @@ export default function ObjectEditor<T extends Record<string, unknown>>({
           const Editor = getEditor(field);
           if (!Editor) return null;
           return (
-            <div className="field" key={key as string}>
+            <div className="field" key={key}>
               <label>
                 {hideTitle ? null : <span>{title}</span>}
                 <Editor
