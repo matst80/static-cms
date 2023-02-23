@@ -1,6 +1,6 @@
 import { PageModule, PageModuleWithProps, Settings } from "slask-cms";
 import { Schema } from "../schema-editor/editor-types";
-import ImagesEditor from "../editors/ImagesEditor";
+import ImagesEditor from "../schema-editor/ImagesEditor";
 import LinksEditor from "../editors/LinksEditor";
 import { PageModulesEditor } from "../editors/PageModulesEditor";
 import SettingsEditor, { settingsSchema } from "../editors/SettingsEditor";

@@ -6,7 +6,7 @@ import {
   DialogProps,
   DialogButtons,
   curryButtons,
-} from "../../editors/Dialog";
+} from "../../components/Dialog";
 
 export function SchemaDialog<T extends Record<string, unknown>>({
   data,

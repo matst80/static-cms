@@ -1,5 +1,5 @@
 import { ModuleProps } from "slask-cms";
-import { ColorEditor } from "../schema-editor/components/StringEditor";
+import { ColorEditor } from "../schema-editor/components/ColorEditor";
 import Resolver from "./Resolver";
 import { makeModuleSchema } from "./schemas";
 
