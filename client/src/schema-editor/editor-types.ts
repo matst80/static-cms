@@ -31,16 +31,8 @@ export type SchemaEditor<T> = SchemaBase<T> & {
   schema: Schema<Record<string, unknown>>;
 };
 
-export type FieldProps<T> = FieldEditorProps<T>;
-
-/*
-T extends Record<string, unknown>
-  ? FieldEditorSchemaProps<T>
-  :
-  */
-
 export type FieldEditor<T, TProps = Record<string, unknown>> = (
-  props: FieldProps<T> & TProps
+  props: FieldEditorProps<T> & TProps
 ) => JSX.Element | null;
 
 export type Schema<T> = {
