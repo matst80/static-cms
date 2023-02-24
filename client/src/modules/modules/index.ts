@@ -1,6 +1,4 @@
 import { Block, PageModule, PageModuleWithProps } from "slask-cms";
-import { ModuleElement } from "../Resolver";
-import { makeModuleSchema } from "../schemas";
 import Accordion from "./Accordion";
 import ArticleList from "./ArticleList";
 import CategoryCarousel from "./CategoryCarousel";
@@ -10,7 +8,6 @@ import HeroMedia from "./HeroMedia";
 import HeroMediaSpots from "./HeroMediaSpots";
 import Intro from "./Intro";
 import MediaText from "./MediaText";
-import ModuleNotFound from "./ModuleNotFound";
 import ProductCarousel from "./ProductCarousel";
 import SearchResults from "./SearchResults";
 import StickyHeader from "./StickyHeader";
@@ -21,11 +18,22 @@ import { UglyHtml } from "./UglyHtml";
 
 export type CmsModuleProps<T = Record<string, unknown>> = T & {
   headline?: string;
+  html?: string;
   detailTextJson?: Block;
 };
 
+export type CmsSettings = {
+  backgroundColor?: string;
+  color?: string;
+  gutters?: boolean;
+  configuration?: string;
+  detailTextColor?: string;
+  columns?: string;
+};
+
 export type BaseModule<T = Record<string, unknown>> = PageModuleWithProps<
-  CmsModuleProps<T>
+  CmsModuleProps<T>,
+  CmsSettings
 >;
 
 export const cmsModules = {
@@ -65,5 +73,5 @@ export default function renderModule<T extends PageModule>(
   // }
   return hasCmsModule(type)
     ? cmsModules[type as CmsModuleKeys](data as any)
-    : ModuleNotFound({ ...data, type });
+    : null;
 }

@@ -1,8 +1,12 @@
-import { BaseModule } from ".";
+import { PageModule, PageModuleWithProps } from "slask-cms";
+import { BaseModule, CmsModuleProps } from ".";
 import { getBlock } from "../../utils/getBlock";
 //import "./Accordion.scss";
 
-function AccordionItem({ id, props = {} }: BaseModule) {
+function AccordionItem({
+  id,
+  props = {},
+}: PageModuleWithProps<CmsModuleProps>) {
   const { headline, detailTextJson } = props;
   const inputId = id;
   return (

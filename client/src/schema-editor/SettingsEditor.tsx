@@ -1,22 +1,18 @@
 import { Settings } from "slask-cms";
 import DatePicker from "./components/DatePicker";
 import { changeHandlerFactory } from "../utils";
-import {
-  FieldEditorProps,
-  FieldEditorSchemaProps,
-  Schema,
-} from "./editor-types";
+import { FieldEditor, FieldEditorSchemaProps, Schema } from "./editor-types";
 import ObjectEditor from "./ObjectEditor";
 
 export const settingsSchema: Schema<Settings> = {
-  validFrom: {
-    title: "Valid from date:",
-    type: DatePicker,
-  },
-  validTo: {
-    title: "Valid to date:",
-    type: DatePicker,
-  },
+  // validTo: {
+  //   title: "Valid to date:",
+  //   type: DatePicker,
+  // },
+  // validFrom: {
+  //   title: "Valid from date:",
+  //   type: DatePicker,
+  // },
 };
 
 type SettingsProps<T extends Settings> = FieldEditorSchemaProps<T>;

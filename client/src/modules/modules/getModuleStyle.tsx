@@ -1,5 +1,5 @@
-import { BaseModule } from "services";
 import { CSSProperties } from "react";
+import { BaseModule } from ".";
 
 const removeEmpty = (data: object) =>
   Object.entries(data).reduce((all, [key, value]) => {
@@ -14,10 +14,9 @@ export const getModuleStyle = ({
 }: {
   settings: BaseModule["settings"];
 }): CSSProperties | undefined => {
-  const { style } = settings;
-  if (style) {
-    const { backgroundColor, color, detailTextColor } = style;
-    return removeEmpty({ color, backgroundColor, "--txt": detailTextColor });
-  }
+  const { backgroundColor, color, detailTextColor } = settings;
+
+  return removeEmpty({ color, backgroundColor, "--txt": detailTextColor });
+
   return undefined;
 };

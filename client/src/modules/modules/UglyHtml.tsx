@@ -1,6 +1,6 @@
-import { BaseModule } from "services";
+import { CmsModuleProps } from ".";
 
-export const UglyHtml = ({ html }: BaseModule) => {
+export const UglyHtml = ({ html }: CmsModuleProps) => {
   if (!html || typeof html !== "string") {
     return null;
   }

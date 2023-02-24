@@ -23,12 +23,12 @@ services:
       - ./db:/data
       - ./redis.conf:/etc/redis/redis.conf
   # api:
-  #   image: node:18-alpine
-  #   ports:
-  #     - 3000:3000
+  #   build: .
+  #   environment:
+  #     PORT: 3000
+  #     REDIS: redis://:slaskdb@redis:6379
   #   volumes:
-  #     - ./src:/app/src
-  #     - ./src:/app/src
+  #     - ./src:/app/src,ro
   #     - ./static:/app/static
   imgproxy:
     hostname: imgproxy

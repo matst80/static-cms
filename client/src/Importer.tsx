@@ -45,8 +45,10 @@ export const convertPicture = ({
   id,
   ...rest
 }: any) => {
-  const mainImages = uris.find((d) => d.breakpoint === "desktop");
-  const sortedBySize = mainImages?.images.sort((a, b) => b.width - a.width);
+  const mainImages = uris.find((d: any) => d.breakpoint === "desktop");
+  const sortedBySize = mainImages?.images.sort(
+    (a: any, b: any) => b.width - a.width
+  );
   const src = fixRelativeImage(sortedBySize?.[0]?.imageURL) ?? "";
   const size: [width: number, height: number] = [
     sortedBySize?.[0].width ?? 0,

@@ -20,25 +20,25 @@ const Swipe = (props: BaseModule & { className: string }) => {
   // return <div className={className}>{children}</div>
 };
 
-const BannerSpots = (data: BaseModule) => {
-  const { modules: [main, quad] = [], settings } = data;
-  return (
-    <div className="lg:grid lg:grid-cols-2 lg:gap-6 banner-spots">
-      <div className="overflow-hidden flex-grow">
-        <div className="flex flex-nowrap">
-          {main.modules?.map((item) => (
-            <Swipe key={item.id} {...item} className="w-full flex-shrink-0" />
-          ))}
-        </div>
-      </div>
-      <div className="lg:grid lg:grid-rows-2 lg:grid-cols-2 lg:gap-6">
-        {quad.modules?.map((item) => (
-          <Swipe key={item.id} {...item} className="object-contain" />
-        ))}
-      </div>
-    </div>
-  );
-};
+// const BannerSpots = (data: BaseModule) => {
+//   const { modules: [main, quad] = [], settings } = data;
+//   return (
+//     <div className="lg:grid lg:grid-cols-2 lg:gap-6 banner-spots">
+//       <div className="overflow-hidden flex-grow">
+//         <div className="flex flex-nowrap">
+//           {main.modules?.map((item) => (
+//             <Swipe key={item.id} {...item} className="w-full flex-shrink-0" />
+//           ))}
+//         </div>
+//       </div>
+//       <div className="lg:grid lg:grid-rows-2 lg:grid-cols-2 lg:gap-6">
+//         {quad.modules?.map((item) => (
+//           <Swipe key={item.id} {...item} className="object-contain" />
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
 
 export default function HeroMediaSpots(data: BaseModule) {
   const { modules, settings } = data;

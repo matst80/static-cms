@@ -1,7 +1,7 @@
 import { FieldEditor } from "../editor-types";
 import { getBlock } from "../../utils/getBlock";
 import { useEffect, useRef, useState } from "react";
-import { Block } from "slask-cms";
+import { Block, Node } from "slask-cms";
 
 type EditorState = {
   nodes: Block;
@@ -15,7 +15,11 @@ type TextEditorProps = {
   onChange: (data: EditorState) => void;
 };
 
-const parseNodes = (elm: ChildNode) => {
+const parseNodes = (node: ChildNode | HTMLElement): Node | Block => {
+  if (node.nodeType === 3) {
+    return { data: node.textContent } as Node;
+  }
+  const elm = node as HTMLElement;
   console.log(elm.nodeType, elm.tagName, elm);
   return {
     name: elm.tagName?.toLowerCase(),
