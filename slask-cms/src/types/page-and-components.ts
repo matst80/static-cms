@@ -92,6 +92,7 @@ export type Block = Node & {
 };
 
 export type Node = {
+  _type: string;
   data?: string;
   links?: Link[];
   name?: unknown;

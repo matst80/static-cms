@@ -8,7 +8,7 @@ type EditorState = {
   selection: Selection | null;
 };
 const createEditorState = (content?: Block): EditorState => {
-  return { nodes: content ?? { name: "div" }, selection: null };
+  return { nodes: content ?? { name: "div", _type: "block" }, selection: null };
 };
 type TextEditorProps = {
   state: EditorState;
@@ -17,11 +17,12 @@ type TextEditorProps = {
 
 const parseNodes = (node: ChildNode | HTMLElement): Node | Block => {
   if (node.nodeType === 3) {
-    return { data: node.textContent } as Node;
+    return { _type: "text", data: node.textContent } as Node;
   }
   const elm = node as HTMLElement;
   console.log(elm.nodeType, elm.tagName, elm);
   return {
+    _type: "block",
     name: elm.tagName?.toLowerCase(),
     children: Array.from(elm.childNodes).map(parseNodes),
   };

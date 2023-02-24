@@ -3,6 +3,7 @@ import { Page, PageModule } from "slask-cms";
 type UrlData = {
   url: string;
   title: string;
+  modified: number;
 };
 
 export type StorageProvider = {
@@ -12,6 +13,6 @@ export type StorageProvider = {
   getUrls: () => Promise<UrlData[]>;
   saveModule: (module: PageModule) => Promise<void>;
   savePage: (page: Page) => Promise<void>;
-  getTitle: (url: string) => Promise<string | undefined>;
+  getMetadata: (url: string) => Promise<UrlData | undefined>;
   getPage: (url: string) => Promise<Page | undefined>;
 };

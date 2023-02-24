@@ -20,16 +20,14 @@ export const pageHandlerFactory = (
 ): SectionHandler => {
   const { storePages, updatePage } = pageFactory(db);
 
-  const appendTitles = (urls: string[]) =>
-    Promise.all(
-      urls.map((url) => db.getTitle(url).then((title = "") => ({ url, title })))
-    );
+  const appendMetadata = (urls: string[]) =>
+    Promise.all(urls.map((url) => db.getMetadata(url)));
 
   return async ({ method, body, fileStatus, path }) => {
     switch (method) {
       case "GET": {
         if (path.endsWith("_urls")) {
-          return getPagesInDirectory(path).then(appendTitles);
+          return getPagesInDirectory(path).then(appendMetadata);
         }
         return [];
       }

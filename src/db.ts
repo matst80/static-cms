@@ -21,7 +21,16 @@ export const redisStorage = (
   client.connect();
   const clientPubSub = createClient(options);
   clientPubSub.connect();
-  const getTitle = (url: string) => client.hGet(url, "title");
+  const getMetadata = (url: string) =>
+    Promise.all([client.hGet(url, "title"), client.hGet(url, "modified")]).then(
+      ([title = "", modified]) => {
+        return {
+          url,
+          title,
+          modified: modified ? Number(modified) : Date.now(),
+        };
+      }
+    );
   return {
     getId() {
       return uid.stamp(32);
@@ -47,6 +56,7 @@ export const redisStorage = (
         }),
         client.hSet(Page, page.url, JSON.stringify(page)),
         client.hSet(page.url, "title", page.seoTitle ?? ""),
+        client.hSet(page.url, "modified", String(page.modified)),
       ]);
     },
     listenForUrlChange(listener) {
@@ -54,17 +64,13 @@ export const redisStorage = (
     },
     async getUrls() {
       const urls = await client.zRange(pageListId, 0, -1);
-      return await Promise.all(
-        urls.map((url) =>
-          getTitle(url).then((title = "") => ({ url: `/${url}`, title }))
-        )
-      );
+      return await Promise.all(urls.map(getMetadata));
     },
     getPage(url) {
       return client
         .hGet(Page, url)
         .then((d) => (d ? JSON.parse(d) : undefined));
     },
-    getTitle,
+    getMetadata: getMetadata,
   };
 };

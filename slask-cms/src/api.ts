@@ -24,7 +24,7 @@ type UploadResult = {
   files: { name }[];
 };
 
-export type UrlAndTitle = { url: string; title?: string };
+export type UrlAndTitle = { url: string; title?: string; modified: number };
 
 export type CmsApi = {
   getPage(url: string): Promise<Page>;
