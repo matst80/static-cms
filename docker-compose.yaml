@@ -30,20 +30,20 @@ services:
   #   volumes:
   #     - ./src:/app/src,ro
   #     - ./static:/app/static
-  imgproxy:
-    hostname: imgproxy
-    container_name: imgproxy
-    image: darthsim/imgproxy:latest
-    restart: unless-stopped
-    environment:
-      - IMGPROXY_ENABLE_WEBP_DETECTION=true
-      - IMGPROXY_ENABLE_AVIF_DETECTION=true
-      #- IMGPROXY_LOCAL_FILESYSTEM_ROOT=/media
-      #- IMGPROXY_KEY=7cd35b721e6f6309c364462646593c296f99c53833d540691d7564108769e940
-      #- IMGPROXY_SALT=c00936dce1e88948b449e1806b0203645efa9694913c75afc71fb7d998950a19
-      #- IMGPROXY_PATH_PREFIX=/image/
-    volumes:
-      - ./imgproxy:/data
+  # imgproxy:
+  #   hostname: imgproxy
+  #   container_name: imgproxy
+  #   image: darthsim/imgproxy:latest
+  #   restart: unless-stopped
+  #   environment:
+  #     - IMGPROXY_ENABLE_WEBP_DETECTION=true
+  #     - IMGPROXY_ENABLE_AVIF_DETECTION=true
+  #     #- IMGPROXY_LOCAL_FILESYSTEM_ROOT=/media
+  #     #- IMGPROXY_KEY=7cd35b721e6f6309c364462646593c296f99c53833d540691d7564108769e940
+  #     #- IMGPROXY_SALT=c00936dce1e88948b449e1806b0203645efa9694913c75afc71fb7d998950a19
+  #     #- IMGPROXY_PATH_PREFIX=/image/
+  #   volumes:
+  #     - ./imgproxy:/data
   server:
     container_name: cmsweb
     image: macbre/nginx-brotli:1.19.6-http3

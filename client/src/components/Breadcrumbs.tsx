@@ -36,8 +36,8 @@ function PathPart({ showArrow, path, file }: PathPartProps) {
           className="absolute translate-y-1/2 mt-12 bg-white rounded-md shadow-lg z-10 p-4 w-64 border border-gray-300"
         >
           <ul>
-            {data?.map(({ url, title }) => (
-              <PageLink key={url} url={url} title={title} />
+            {data?.map((link) => (
+              <PageLink key={link.url} {...link} />
             ))}
           </ul>
           <CreatePageButton path={path.join("/")} title="Add subpage" />

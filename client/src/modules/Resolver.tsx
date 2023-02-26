@@ -16,6 +16,7 @@ const cmsSchema = makeModuleSchema<CmsModuleProps>({
   },
   detailTextJson: {
     title: "Detail text",
+    hideTitle: true,
     type: RichTextEditor,
   },
 });

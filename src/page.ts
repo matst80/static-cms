@@ -49,8 +49,8 @@ export const pageFactory = (db: StorageProvider) => {
       db.savePage(page),
       getStoragePathFromPage(page).then((path) =>
         compressStaticFile(path, page, true).then(() => {
-          const { url, seoTitle } = page;
-          db.emitUrlChange({ url, title: seoTitle ?? "" });
+          const { url, seoTitle, modified } = page;
+          db.emitUrlChange({ url, title: seoTitle ?? "", modified });
           return page;
         })
       ),

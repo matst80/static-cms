@@ -18,7 +18,7 @@ function App() {
         </div>
       </div>
       <div className="flex">
-        <aside className="w-72 border-r min-h-screen border-gray-400 p-6">
+        <aside className="w-72 border-r min-h-screen border-gray-400 p-6 flex-shrink-0">
           <div className="sticky top-2">
             <ul className="space-y-2 flex-col">
               {urls?.map((pageLink) => (

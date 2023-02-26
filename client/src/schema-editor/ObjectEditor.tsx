@@ -48,16 +48,18 @@ export default function ObjectEditor<T extends Record<string, unknown>>({
           if (!Editor) return null;
           return (
             <div className="field" key={key}>
-              <label>
-                {hideTitle ? null : <span>{title}</span>}
-                <Editor
-                  data={data?.[key] ?? defaultValue}
-                  parent={data}
-                  schema={schema}
-                  onChange={changeHandler(key)}
-                  label={title}
-                />
-              </label>
+              {hideTitle ? null : (
+                <label>
+                  <span>{title}</span>
+                </label>
+              )}
+              <Editor
+                data={data?.[key] ?? defaultValue}
+                parent={data}
+                schema={schema}
+                onChange={changeHandler(key)}
+                label={title}
+              />
             </div>
           );
         })}
