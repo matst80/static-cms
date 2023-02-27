@@ -1,0 +1,134 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: redisconfig
+data:
+  redis.conf: |
+    bind 0.0.0.0
+    port 6379
+    requirepass slaskdb
+    protected-mode yes
+    save 900 1
+    save 300 10
+    save 60 10000
+    tcp-keepalive 300
+    timeout 0
+    rdbcompression yes
+    dir /data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  redis
+  labels:
+    app:  redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  redis
+    spec:
+      containers:
+      - name:  redis
+        image:  redis:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            memory: 800Mi
+        ports:
+        - containerPort: 6379
+          name:  redis
+        command: ["redis-server", "/etc/redis/redis.conf"]
+        volumeMounts:
+        - name: redisconfig
+          mountPath: /etc/redis
+      volumes:
+        - name: redisconfig
+          configMap:
+            name: redisconfig
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis
+  type: ClusterIP
+  sessionAffinity: None
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  ports:
+  - name: redis
+    protocol: TCP
+    port: 6379
+    targetPort: 6379
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  slask-api
+  labels:
+    app:  slask-api
+spec:
+  selector:
+    matchLabels:
+      app: slask-api
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: slask-api
+    spec:
+      containers:
+      - name: slask-api
+        image: registry.knatofs.se/slask-api:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            memory: 800Mi
+        env:
+          - name: REDIS
+            value: redis://:slaskdb@redis:6379
+        ports:
+          - containerPort: 3000
+            name:  redis
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+spec:
+  selector:
+    app: slask-api
+  type: ClusterIP
+  sessionAffinity: None
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  ports:
+  - name: api
+    protocol: TCP
+    port: 3000
+    targetPort: 3000

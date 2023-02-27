@@ -3,7 +3,7 @@ import { Page, PageModule } from "slask-cms";
 type UrlData = {
   url: string;
   title: string;
-  modified: number;
+  modified?: number;
 };
 
 export type StorageProvider = {
