@@ -26,10 +26,11 @@ const getHandler =
       };
 
 const port = process.env.PORT ?? 3010;
-
-const db = redisStorage({
+const dbOptions = {
   url: process.env.REDIS ?? "redis://:slaskdb@localhost:6379",
-});
+};
+console.log("connect", dbOptions);
+const db = redisStorage(dbOptions);
 
 const indexProvider = zincSearchFactory({
   baseUrl: process.env.ZINC ?? "http://10.10.1.4:4080",
