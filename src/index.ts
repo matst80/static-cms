@@ -27,14 +27,14 @@ const getHandler =
 
 const port = process.env.PORT ?? 3010;
 const dbOptions = {
-  url: process.env.REDIS ?? "redis://:slaskdb@localhost:6379",
+  url: process.env.REDIS ?? "redis://10.10.1.2:6379",
 };
 console.log("connect", dbOptions);
 const db = redisStorage(dbOptions);
 
 const indexProvider = zincSearchFactory({
-  baseUrl: process.env.ZINC ?? "http://10.10.1.4:4080",
-  auth: process.env.ZINC_AUTH ?? "YWRtaW46c2xhc2tjbXM=",
+  baseUrl: process.env.ZINC ?? "http://10.10.1.2:4080",
+  auth: process.env.ZINC_AUTH ?? "YWRtaW46MTJiYW5hbmVyIQ==",
 });
 const pageHandler = pageHandlerFactory(db, indexProvider);
 const { authHandler, validToken } = authHandlerFactory(authOptions);
