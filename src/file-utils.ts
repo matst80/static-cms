@@ -10,7 +10,7 @@ import { storageSections, StorageSections } from "./types/storage";
 const gzipCompressFile = async (outputFile: string, source: ReadStream) => {
   const gzip = createGzip();
   const destination = createWriteStream(outputFile);
-  return pipeline(source, gzip, destination);
+  return pipeline(source, gzip, destination); 
 };
 
 const brotliOptions = {

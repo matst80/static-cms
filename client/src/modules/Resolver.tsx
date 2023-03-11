@@ -19,7 +19,7 @@ const cmsSchema = makeModuleSchema<CmsModuleProps>({
     hideTitle: true,
     type: RichTextEditor,
   },
-});
+} as any);
 
 function convert(data: Record<string, any>) {
   return Object.fromEntries(
