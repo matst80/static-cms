@@ -33,14 +33,16 @@ const saveModulesFactory = (db: StorageProvider) => {
   return saveModules;
 };
 
+type PageUpdate = {
+  url: string;
+} & Partial<Page>;
+
 const prepairPage =
   <T extends PageUpdate>(fn: (page: T) => Promise<T>) =>
   (page: T) => {
     const now = Date.now();
     return fn({ ...page, created: page.created ?? now, modified: now });
   };
-
-type PageUpdate = { url: string } & Partial<Page>;
 
 export const pageFactory = (db: StorageProvider) => {
   const savePage = (page: Page): Promise<Page> =>

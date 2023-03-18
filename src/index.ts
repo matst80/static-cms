@@ -1,10 +1,9 @@
-import { pageFactory } from "./page";
 import http from "http";
 import {
   getSectionAndPath,
   getStoragePathForImages,
   getStoragePathFromUrl,
-  getVariants,
+  compressStaticFile,
 } from "./file-utils";
 import { jsonRequest } from "./server-utils";
 import { StorageSections } from "./types/storage";
@@ -17,6 +16,7 @@ import { SectionHandler } from "./types/server";
 import { authOptions } from "./settings";
 import formidable from "formidable";
 import { zincSearchFactory } from "./search";
+import { defaultHandler } from "./staticfile";
 
 const getHandler =
   process.env.NODE_ENV === "development"
@@ -73,8 +73,9 @@ const assetHandler: SectionHandler = async ({ req, method, path }) => {
 const sectionHandlers: Record<StorageSections, SectionHandler> = {
   page: pageHandler,
   assets: assetHandler,
-  header: () => Promise.reject("Not implemented"),
-  settings: () => Promise.reject("Not implemented"),
+  translations: defaultHandler,
+  header: defaultHandler,
+  settings: defaultHandler,
   module: () => Promise.reject("Not implemented"),
 };
 
@@ -94,11 +95,12 @@ const server = http.createServer(
     if (!authorized(req)) {
       return res.writeHead(401).end();
     }
-
+    const filePath = getStoragePathFromUrl(path, section);
     return sectionHandlers[section]({
       req,
       res,
-      fileStatus: getStoragePathFromUrl(path, section).then((filePath) => ({
+      filePath,
+      fileStatus: filePath.then((filePath) => ({
         exists: existsSync(filePath),
         filePath,
       })),

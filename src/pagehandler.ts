@@ -1,4 +1,4 @@
-import { readdir, unlink } from "fs/promises";
+import { unlink } from "fs/promises";
 import { Page } from "slask-cms";
 import { getPagesInDirectory, getVariants } from "./file-utils";
 import { pageFactory } from "./page";

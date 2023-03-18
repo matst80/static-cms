@@ -1,7 +1,11 @@
 import { createReadStream, existsSync } from "fs";
-import path from "path";
-import { getSectionAndPath, getStoragePathFromUrl } from "./file-utils";
+import {
+  compressStaticFile,
+  getSectionAndPath,
+  getStoragePathFromUrl,
+} from "./file-utils";
 import { JsonRequest, JsonResponse } from "./server-utils";
+import { SectionHandler } from "./types/server";
 
 export default async function handleStaticFiles(
   req: JsonRequest,
@@ -21,3 +25,17 @@ export default async function handleStaticFiles(
     stream.pipe(res);
   }
 }
+
+export const defaultHandler: SectionHandler = async ({
+  method,
+  filePath,
+  body,
+}) => {
+  if (method === "POST") {
+    const translations = await body();
+    const fsPath = await filePath;
+    compressStaticFile(fsPath, translations, false);
+    return { ok: true };
+  }
+  return { ok: false };
+};
