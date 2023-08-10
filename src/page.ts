@@ -37,7 +37,7 @@ type PageUpdate = {
   url: string;
 } & Partial<Page>;
 
-const prepairPage =
+const preparePage =
   <T extends PageUpdate>(fn: (page: T) => Promise<T>) =>
   (page: T) => {
     const now = Date.now();
@@ -65,6 +65,6 @@ export const pageFactory = (db: StorageProvider) => {
       .then((original) => savePage({ ...original!, ...page, url }));
 
   const storePages = (...pages: Page[]) =>
-    Promise.all(pages.map(prepairPage(savePage)));
+    Promise.all(pages.map(preparePage(savePage)));
   return { storePages, updatePage };
 };
